@@ -32,8 +32,8 @@ public final class EntityRenderer {
 		lightEntities = new HashMap<Model, ArrayList<Entity>>();
 		lightEntities.put(lightEntityNoModel, new ArrayList<Entity>());
 
-		modelShader = new ModelShader("src/main/resources/assets/shaders/modelVertShader.txt",
-				"src/main/resources/assets/shaders/modelFragShader.txt");
+		modelShader = new ModelShader("Engine/src/main/resources/assets/shaders/modelVertShader.txt",
+				"Engine/src/main/resources/assets/shaders/modelFragShader.txt");
 	}
 
 	public void render(float dt) {

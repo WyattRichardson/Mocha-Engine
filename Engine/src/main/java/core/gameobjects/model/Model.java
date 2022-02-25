@@ -24,7 +24,7 @@ public class Model extends EntityComponent{
 		this.faceType = faceType;
 		vaoID = glGenVertexArrays();
 		try {
-			OBJLoader.readOBJ("src/main/resources/assets/models/" + fName, faceType);
+			OBJLoader.readOBJ("Engine/src/main/resources/assets/models/" + fName, faceType);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			System.err.print("Could not find OBJFile: " + fName);
