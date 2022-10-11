@@ -3,10 +3,9 @@ import static org.lwjgl.opengl.GL30.*;
 
 import org.joml.Vector3f;
 
-import core.application.Sandbox;
+import core.application.Scene;
 import core.gameobjects.camera.Camera;
 import core.gameobjects.entity.Entity;
-import core.gameobjects.entity.EntityComponent;
 import core.gameobjects.lighting.Light;
 import core.gameobjects.model.Model;
 
@@ -22,7 +21,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-		Sandbox sandbox = new Sandbox(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, CLEAR_COLOR);
+		Scene sandbox = new Scene(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, CLEAR_COLOR);
 		Model squareModel = new Model("Square.obj", GL_TRIANGLES);
 		Model mando = new Model("Mandalorian.obj", GL_TRIANGLES);
 		Light sunLight = new Light(new Vector3f(0,200,0), new Vector3f(0,0,0), new Vector3f(1,1,1));
@@ -32,8 +31,8 @@ public class Main {
 		
 		Player player_1 = new Player("player_1");
 		player_1.addComponent(mando);
-		player_1.setPosition(0, 0, -100);
 		player_1.hasController = true;
+		player_1.setPosition(0, 0, -100);
 		sandbox.addEntity(player_1);
 		
 		Camera playerCam = new Camera(player_1);

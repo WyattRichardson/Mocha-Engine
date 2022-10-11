@@ -3,7 +3,6 @@ package core.gameobjects.camera;
 import org.joml.Vector3f;
 
 import core.gameobjects.entity.Entity;
-import core.gameobjects.entity.EntityComponent;
 import core.gameobjects.entity.Transform;
 
 public class Camera {

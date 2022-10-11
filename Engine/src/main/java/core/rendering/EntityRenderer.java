@@ -6,14 +6,13 @@ import core.gameobjects.entity.EntityComponent;
 import core.gameobjects.lighting.Light;
 import core.gameobjects.model.Model;
 import core.rendering.shaders.ModelShader;
-import core.utils.KeyInput;
 import core.utils.Math;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
+
 
 import static org.lwjgl.opengl.GL30.*;
 

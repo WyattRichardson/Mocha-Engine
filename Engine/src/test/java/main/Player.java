@@ -4,8 +4,6 @@ import static org.lwjgl.glfw.GLFW.*;
 
 import core.gameobjects.entity.EntityController;
 import core.gameobjects.entity.Entity;
-import core.gameobjects.entity.Transform;
-import core.gameobjects.model.Model;
 import core.utils.KeyInput;
 
 public class Player extends Entity implements EntityController{

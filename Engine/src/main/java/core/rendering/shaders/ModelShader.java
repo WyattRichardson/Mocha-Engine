@@ -1,7 +1,7 @@
 package core.rendering.shaders;
 import static org.lwjgl.opengl.GL30.*;
 
-import core.application.Sandbox;
+import core.application.Scene;
 import core.utils.Math;
 public class ModelShader extends ShaderProgram {
 	
@@ -36,7 +36,7 @@ public class ModelShader extends ShaderProgram {
 	public void getUniformLocations() {
 		uniformLocations.put("projectionMatrix", glGetUniformLocation(this.programID, "projectionMatrix"));
 		float[] projectionMat = new float[16];
-		Math.createProjectionMatrix(Sandbox.currentVidMode).get(projectionMat);
+		Math.createProjectionMatrix(Scene.currentVidMode).get(projectionMat);
 		glUniformMatrix4fv(uniformLocations.get("projectionMatrix"), false, projectionMat);
 		
 		uniformLocations.put("viewMatrix", glGetUniformLocation(this.programID, "viewMatrix"));

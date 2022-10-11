@@ -6,9 +6,7 @@ import java.util.List;
 import org.joml.Vector3f;
 
 
-import core.gameobjects.model.Model;
 import core.gameobjects.textures.ModelTexture;
-import core.gameobjects.textures.Texture;
 
 public class Entity {
 	public static final int TEXTURE_INDEX = 0;

@@ -4,8 +4,6 @@ import static org.lwjgl.glfw.GLFW.*;
 
 import static org.lwjgl.opengl.GL30.*;
 
-import java.util.ArrayList;
-
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -14,13 +12,12 @@ import static org.lwjgl.glfw.Callbacks.*;
 
 import core.gameobjects.camera.Camera;
 import core.gameobjects.entity.Entity;
-import core.gameobjects.lighting.Light;
 import core.rendering.*;
 import core.utils.KeyInput;
 
-public final class Sandbox { 
+public final class Scene { 
 	
-	static { //Initialize GLFW statically to allow for multiple Sandbox applications
+	static { //Initialize GLFW statically to allow for multiple Scenes
 		
 		if(!glfwInit()) {
 			System.out.println("FAILED TO INITILIZE GLFW!");
@@ -38,7 +35,7 @@ public final class Sandbox {
 	public static GLFWVidMode currentVidMode = null;
 	
 	
-	public Sandbox(int width, int height, String title, float[] clearColor) { 
+	public Scene(int width, int height, String title, float[] clearColor) { 
 		windowID = glfwCreateWindow(width, height, title, 0, 0);
 		GLFWErrorCallback.createPrint(System.err).set();
 		glfwMakeContextCurrent(windowID);

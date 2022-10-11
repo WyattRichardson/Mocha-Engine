@@ -1,0 +1,18 @@
+#version 330 core 
+in vec2 interpTexCoords;
+in vec3 interpNormal;
+in vec3 toLightVectors[4];
+uniform vec3 lightColors[4];
+
+void main(){
+	vec3 totalDiffuse = vec3(0.0);
+	vec3 unitNormal = normalize(interpNormal);
+	
+	for(int i = 0; i < 4; i++){
+		float brightness = max(0.0, dot(normalize(toLightVectors[i]), unitNormal));
+		vec3 diffuse =brightness * lightColors[i];
+		totalDiffuse = totalDiffuse + diffuse;
+	}
+	totalDiffuse = max(vec3(0.2,0.2,0.2), totalDiffuse);
+	gl_FragColor = vec4(totalDiffuse, 1.0);
+}
