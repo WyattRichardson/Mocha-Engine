@@ -1,13 +1,9 @@
 package core.gameobjects.entity;
 
-public interface EntityController {
-
-	
-	public void tick(float dt);
-	
-	public void updateTransform(float dt);
-	
-	
-	
+public abstract class EntityController extends EntityComponent {
+	public EntityController(Type type) {
+		super(type);
+	}
+	public abstract void tick(float dt);
 }
 				

@@ -1,12 +1,8 @@
 package core.gameobjects.model;
-
 import static org.lwjgl.opengl.GL30.*;
-
 import java.io.FileNotFoundException;
-
 import core.gameobjects.entity.EntityComponent;
 import core.utils.OBJLoader;
-
 public class Model extends EntityComponent{
 	
 	private int vaoID;
@@ -14,13 +10,9 @@ public class Model extends EntityComponent{
 	private int faceType;
 	
 	private int indicyCount;
-		
-	public Model() {
-		super();
-	}
 	
-	public Model(String fName, int faceType){
-		super();
+	public Model(Type type, String fName, int faceType){
+		super(type);
 		this.faceType = faceType;
 		vaoID = glGenVertexArrays();
 		try {
@@ -68,10 +60,4 @@ public class Model extends EntityComponent{
 		return this.vaoID;
 	}
 
-	@Override
-	public void setComponentType() {
-		type = EntityComponent.TYPE_MODEL;
-	}
-
-	
 }

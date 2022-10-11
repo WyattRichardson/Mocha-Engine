@@ -1,40 +1,56 @@
 package core.gameobjects.camera;
-
-import org.joml.Vector3f;
-
 import core.gameobjects.entity.Entity;
-import core.gameobjects.entity.Transform;
-
-public class Camera {
-	
-	public Transform transform;
+public class Camera extends Entity{
 	private Entity anchorEntity;
-	private CameraController controller = null;
-	
-	public boolean isActive = false;
-	public boolean hasAnchor;
-	public float FOV;
-	public float distanceFromAnchor;
+	private boolean active = false;
+	private boolean hasAnchor = false;
+	private float FOV;
+	private float distanceFromAnchor;
 
-	public Camera(Entity anchorEntity) {
-		this.anchorEntity = anchorEntity;
+	public Camera(String entityId) {
+		super(entityId);
 	}
-	public Camera(Vector3f position, Vector3f rotation) {
-		this.transform.position = position;
-		this.transform.rotation = rotation;
-		
+
+
+	public boolean isActive() {
+		return this.active;
 	}
-	public Vector3f getPosition() {
-		return transform.position;
+
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
-	public Vector3f getRotation() {
-		return transform.rotation;
+
+
+	public boolean getHasAnchor() {
+		return this.hasAnchor;
 	}
-	public void setController(CameraController controller) {
-		this.controller = controller;
+
+	public void setHasAnchor(boolean hasAnchor) {
+		this.hasAnchor = hasAnchor;
 	}
-	public Entity getAnchor() {
+
+	public float getFOV() {
+		return this.FOV;
+	}
+
+	public void setFOV(float FOV) {
+		this.FOV = FOV;
+	}
+
+	public float getDistanceFromAnchor() {
+		return this.distanceFromAnchor;
+	}
+
+	public void setDistanceFromAnchor(float distanceFromAnchor) {
+		this.distanceFromAnchor = distanceFromAnchor;
+	}
+
+
+	public void setAnchorEntity(Entity e){
+		anchorEntity = e;
+	}
+	public Entity getAnchorEntity() {
 		return anchorEntity;
 	}
-
 }

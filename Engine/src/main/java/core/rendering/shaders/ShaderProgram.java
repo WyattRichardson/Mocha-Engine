@@ -10,12 +10,14 @@ import org.lwjgl.opengl.GL20;
 
 public abstract class ShaderProgram {
 	public HashMap<String, Integer> uniformLocations;
-	
+	protected int programId = 0;
 	public ShaderProgram() {
 		uniformLocations = new HashMap<String, Integer>();
 	}
 	
-	public abstract int getID();
+	public int getID(){
+		return programId;
+	};
 	
 	public int loadShader(String file, int type) {
 		StringBuilder shaderSource = new StringBuilder();

@@ -1,66 +1,61 @@
 package core.gameobjects.entity;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import org.joml.Vector3f;
-
-
-import core.gameobjects.textures.ModelTexture;
-
+import core.gameobjects.entity.EntityComponent.Type;
 public class Entity {
 	public static final int TEXTURE_INDEX = 0;
-	
-	
-	public Transform transform;
-	public ArrayList<EntityComponent> components;
-	public String id;
-	public boolean hasController = false;
-	
+	private List<EntityComponent> components;
+	private String id;
+	private boolean hasController = false;
+	private boolean hasModel = false;
+	private boolean hasTransform = false;
 	public Entity(String id) {
-		this.id = id;
-		transform = new Transform(0,0,-1,0,0,0,1);
 		components = new ArrayList<EntityComponent>();
+		this.id = id;
 	}
-	
-	public void tick(float dt) {}
-	
-	
-	public List<EntityComponent> getComponentsByType(int type) {
-		List<EntityComponent> components = new ArrayList<EntityComponent>();
-		for(EntityComponent component: this.components) {
-			if(component.type == type) {
-				components.add(component);
+	public List<EntityComponent> getComponentsByType(Type type) {
+		List<EntityComponent> batch = new ArrayList<EntityComponent>();
+		for(EntityComponent component: components) {
+			if(component.getType() == type) {
+				batch.add(component);
 			}
 		}
-		return components;
+		return batch;
 	}
-	
-	public void setPosition(float x, float y, float z) {
-		transform.position.x = x;
-		transform.position.y = y;
-		transform.position.z = z;
+	public EntityComponent getComponentByType(Type type) {
+ 		for(EntityComponent component: components) {
+			if(component.getType() == type) {
+				return component;
+			}
+		}
+		System.err.println("COULD NOT FIND COMPONENT OF TYPE: " + type + " IN ENTITY: " + id);
+		throw new NullPointerException(); //If end of list is reached and no component is found with matching type, throw nullpointer to crash system.
 	}
-	public void setRotation(float rx, float ry, float rz) {
-		transform.rotation.x = rx;
-		transform.rotation.y = ry;
-		transform.rotation.z = rz;
-	}
-	public void setScale(float scale) {
-		transform.scale = scale;
-	}
-	public Vector3f getPosition() {
-		return this.transform.position;
-	}
-	
-	public Vector3f getRotation() {
-		return this.transform.rotation;
-	}
-	public float getScale() {
-		return this.transform.scale;
-	}
-	public void addComponent(EntityComponent component) {
+	public void addComponent(EntityComponent component){
+		switch(component.getType()){
+			case MODEL:
+				hasModel = true;
+				break;
+			case CONTROLLER:
+				hasController = true;
+				break; 
+			case TRANSFORM:
+				hasTransform = true;
+				break; 
+		}
 		components.add(component);
+	}
+	public boolean hasController(){
+		return hasController;
+	}
+	public boolean hasModel(){
+		return hasModel;
+	}
+	public boolean hasTransform(){
+		return hasTransform;
+	}
+	public String getId(){
+		return this.id;
 	}
 	
 }

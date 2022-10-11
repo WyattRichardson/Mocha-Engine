@@ -10,11 +10,13 @@
 	
 	
 	<properties>
+		<src.dir>src</src.dir>
 		<lwjgl.version>3.3.1</lwjgl.version>
 		<lwjgl.natives>natives-windows</lwjgl.natives>
 	</properties>
 
 	<build>
+		<sourceDirectory>${src.dir}</sourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

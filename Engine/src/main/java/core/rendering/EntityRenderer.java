@@ -1,15 +1,17 @@
 package core.rendering;
-
-import core.gameobjects.camera.Camera;
 import core.gameobjects.entity.Entity;
-import core.gameobjects.entity.EntityComponent;
+import core.gameobjects.entity.EntityController;
+import core.gameobjects.entity.EntityComponent.Type;
 import core.gameobjects.lighting.Light;
 import core.gameobjects.model.Model;
 import core.rendering.shaders.ModelShader;
 import core.utils.Math;
+import core.gameobjects.entity.Transform;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.joml.Vector3f;
 
@@ -18,21 +20,17 @@ import static org.lwjgl.opengl.GL30.*;
 
 public final class EntityRenderer {
 
-	public HashMap<Model, ArrayList<Entity>> entities;
-	public HashMap<Model, ArrayList<Entity>> lightEntities;
-	public ArrayList<Camera> cameras = new ArrayList<Camera>();
-	private static Model lightEntityNoModel = new Model();
+	public Map<Model, ArrayList<Entity>> entities_with_models;
+	public List<Entity> entities_without_models;
 
 	private ModelShader modelShader;
 
 	public EntityRenderer() { //TODO: implement camera functionality!
 		
-		entities = new HashMap<Model, ArrayList<Entity>>();
-		lightEntities = new HashMap<Model, ArrayList<Entity>>();
-		lightEntities.put(lightEntityNoModel, new ArrayList<Entity>());
-
+		entities_with_models = new HashMap<Model, ArrayList<Entity>>(); //All 
+		entities_without_models = new ArrayList<Entity>();
 		modelShader = new ModelShader("Engine/src/main/resources/assets/shaders/modelVertShader.txt",
-				"Engine/src/main/resources/assets/shaders/modelFragShader.txt");
+		"Engine/src/main/resources/assets/shaders/modelFragShader.txt");
 	}
 
 	public void render(float dt) {
@@ -40,57 +38,39 @@ public final class EntityRenderer {
 		glUseProgram(modelShader.getID());
 		
 		
-		renderLightEntities(dt);
-		renderModelEntities(dt);
+		
+		tickEntitiesWithoutModels(dt);
+		renderEntitiesWithModels(dt);
 		
 		glUseProgram(0);
 
 	}
 
-	public void renderLightEntities(float dt) { // primary purpose of separating into two methods is to ensure entities
-		for (Model model : lightEntities.keySet()) {
-			if (!model.equals(lightEntityNoModel)) {
-				int vaoID = model.getVAO();
-
-				glBindVertexArray(vaoID);
-
-				glEnableVertexAttribArray(0);
-				glEnableVertexAttribArray(1);
-				glEnableVertexAttribArray(2);
-
-				ArrayList<Entity> batch = entities.get(model);
-				for (Entity entity: batch) {
-
-					if (isInFOV(entity.getPosition())) {
-						if (entity.hasController) {
-							entity.tick(dt);
-						}
-						prepareLightEntity(entity);
-						// If controller is not working correctly then: batch.get(i) = entity;
-						glDrawElements(model.getFaceType(), model.getIndicyCount(), GL_UNSIGNED_INT, 0);
+	public void tickEntitiesWithoutModels(float dt) throws NullPointerException {
+		for (Entity entity : entities_without_models) {
+			if (entity.hasController()) {
+				EntityController controller = (EntityController) entity.getComponentByType(Type.CONTROLLER);
+				controller.tick(dt);
+				if(entity.getClass().getSimpleName().equals("Light")){//TEST THIS
+					Light light = (Light) entity;
+					int uniformIndex = light.getUniformIndex();
+					if(light.hasTransform()){
+						Transform transform = (Transform) light.getComponentByType(Type.TRANSFORM);
+						glUniform3f(modelShader.uniformLocations.get("lightPositions[" + uniformIndex + "]"), transform.getPosition().x, transform.getPosition().y, transform.getPosition().z);
+						glUniform3f(modelShader.uniformLocations.get("lightColors[" + uniformIndex + "]"), light.getColor().x, light.getColor().y, light.getColor().z);
+					}else{
+						System.err.println("LIGHT: " + light.getId() + " DOES NOT HAVE A TRANSFORM AND WAS SENT TO BE TICKED!");
+						throw new NullPointerException();
 					}
-
 				}
-				glDisableVertexAttribArray(0);
-				glDisableVertexAttribArray(1);
-				glDisableVertexAttribArray(2);
-
-				glBindVertexArray(0);
-			} else {
-				ArrayList<Entity> batch = lightEntities.get(lightEntityNoModel);
-				for (Entity entity: batch) {
-					if (entity.hasController) {
-						entity.tick(dt);
-					}
-					prepareLightEntity(entity);
-
-				}
+			}else{
+				System.err.println("WARNING! ENTITY: " + entity.getId() + " DOES NOT HAVE CONTROLLER AND WAS SENT TO BE TICKED!");
 			}
 		}
 	}
 
-	public void renderModelEntities(float dt) {
-		for (Model model : entities.keySet()) {
+	public void renderEntitiesWithModels(float dt) throws NullPointerException{
+		for (Model model : entities_with_models.keySet()) {
 
 			int vaoID = model.getVAO();
 
@@ -100,16 +80,23 @@ public final class EntityRenderer {
 			glEnableVertexAttribArray(1);
 			glEnableVertexAttribArray(2);
 
-			ArrayList<Entity> batch = entities.get(model);
+			List<Entity> batch = entities_with_models.get(model);
 			
 			for (Entity entity: batch) {
-
-				if (isInFOV(entity.getPosition())) {
-					if (entity.hasController) {
-						entity.tick(dt);
+				if(!entity.hasTransform()){
+					System.err.println("ENTITY: " + entity.getId() + " DOES NOT HAVE A TRANSFORM AND WAS SENT TO BE RENDERED!");
+					throw new NullPointerException();
+				}
+				Transform transform = (Transform) entity.getComponentByType(Type.TRANSFORM);	
+				if (isInFOV(transform.getPosition())) {
+					if (entity.hasController()) {
+						EntityController controller = (EntityController) entity.getComponentByType(Type.CONTROLLER);
+						controller.tick(dt);
 					}
-					prepareEntity(entity);
-					// If controller is not working correctly then: batch.get(i) = entity;
+					float[] modelTransformMat = new float[16];
+					Math.createTransformationMatrix(transform.getPosition(), transform.getRotation(), transform.getScale())
+					.get(modelTransformMat);
+					glUniformMatrix4fv(modelShader.uniformLocations.get("transformationMatrix"), false, modelTransformMat);
 					glDrawElements(model.getFaceType(), model.getIndicyCount(), GL_UNSIGNED_INT, 0);
 				}
 
@@ -123,56 +110,22 @@ public final class EntityRenderer {
 		}
 	}
 
-	public void prepareLightEntity(Entity entity) {
-		List<EntityComponent> lights = entity.getComponentsByType(EntityComponent.TYPE_LIGHT);
-		//TODO create for loop that loops through the list and updates uniforms respectively.
 		
-		for(int i = 0; i < lights.size(); i++) {
-			Light light = (Light) lights.get(i);
-			int index = light.getIndex();
-			glUniform3f(modelShader.uniformLocations.get("lightPositions[" + index + "]"), light.getPosition().x, light.getPosition().y, light.getPosition().z);
-			glUniform3f(modelShader.uniformLocations.get("lightColors[" + index + "]"), light.getColor().x, light.getColor().y, light.getColor().z);
-
-		}	
-		
-		
-	}
-
-	public void prepareEntity(Entity entity) {
-		float[] modelTransformMat = new float[16];
-		Math.createTransformationMatrix(entity.getPosition(), entity.getRotation(), entity.getScale())
-				.get(modelTransformMat);
-		glUniformMatrix4fv(modelShader.uniformLocations.get("transformationMatrix"), false, modelTransformMat);
-	}
 
 	public boolean isInFOV(Vector3f position) {
-		return true; // TODO: implement
+		return true; //me TODO: implent
 	}
 
 	public void addEntity(Entity entity) {
-		Model model = (Model) entity.getComponentsByType(EntityComponent.TYPE_MODEL).get(0);
-		if (!entities.containsKey(model)) {
-			entities.put(model, new ArrayList<Entity>());
+		if(entity.hasModel()){
+			Model model = (Model) entity.getComponentsByType(Type.MODEL).get(0);
+			if(!entities_with_models.containsKey(model)){
+				entities_with_models.put(model, new ArrayList<Entity>());
+			}
+			entities_with_models.get(model).add(entity);
+		}else{
+			entities_without_models.add(entity);
 		}
-		entities.get(model).add(entity);
-	}
-
-	public void addLightEntity(Entity entity) {
-
-		List<EntityComponent> models = entity.getComponentsByType(EntityComponent.TYPE_MODEL);
-		Model model = null;
-		if(models.size() != 0) {
-			model = (Model) models.get(0);
-		}
-		if (model != null && !lightEntities.containsKey(model)) {
-			lightEntities.put(model, new ArrayList<Entity>());
-		}
-		if (model != null) {
-			lightEntities.get(model).add(entity);
-		} else {
-			lightEntities.get(lightEntityNoModel).add(entity);
-		}
-
 	}
 
 	public void cleanUp() {

@@ -1,4 +1,15 @@
 {
     "java.configuration.updateBuildConfiguration": "automatic",
-    "java.dependency.packagePresentation": "hierarchical"
+    "java.dependency.packagePresentation": "hierarchical",
+    "java.project.sourcePaths": [
+        "src"
+    ],
+    "material-icon-theme.activeIconPack": "react",
+    "material-icon-theme.folders.theme": "specific",
+    "material-icon-theme.hidesExplorerArrows": true,
+    "material-icon-theme.languages.associations": {
+    
+    },
+    "java.dependency.showMembers": false,
+    "java.dependency.syncWithFolderExplorer": true
 }

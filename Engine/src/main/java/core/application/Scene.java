@@ -10,7 +10,6 @@ import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.Callbacks.*;
 
-import core.gameobjects.camera.Camera;
 import core.gameobjects.entity.Entity;
 import core.rendering.*;
 import core.utils.KeyInput;
@@ -76,16 +75,9 @@ public final class Scene {
 		}
 	}
 	
-	public void addCamera(Camera camera) {
-		entityRenderer.cameras.add(camera);
-	}
 	public void addEntity(Entity entity) {
 		entityRenderer.addEntity(entity);
 	}
-	public void addLightEntity(Entity entity) {
-		entityRenderer.addLightEntity(entity);
-	}
-	
 	public void cleanUp() {
 		entityRenderer.cleanUp();
 	}
