@@ -29,7 +29,6 @@ public abstract class ShaderProgram {
 			}
 			reader.close();
 		} catch (IOException e) {
-			System.err.println("Could not read shader: " + file);
  			e.printStackTrace();
  			System.exit(-1);
 		}

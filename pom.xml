@@ -5,27 +5,24 @@
 
 	
 	<groupId>richardson</groupId>
-	<artifactId>engine</artifactId>
+	<artifactId>Engine</artifactId>
 	<version>0.1</version>
 	
 	
 	<properties>
-		<src.dir>src</src.dir>
 		<lwjgl.version>3.3.1</lwjgl.version>
 		<lwjgl.natives>natives-windows</lwjgl.natives>
 	</properties>
 
 	<build>
-		<sourceDirectory>${src.dir}</sourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.7.0</version>
 				<configuration>
-					<source>10</source>
-					<target>10</target>
-					<release>10</release>
+					<source>8</source>
+					<target>8</target>
 				</configuration>
 			</plugin>
 		</plugins>

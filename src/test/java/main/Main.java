@@ -63,7 +63,7 @@ public class Main {
 
 		
 
-		Entity sun = new Light("Sun", new Vector3f(1f,1f,1f));
+		Entity sun = new Light("Sun", new Vector3f(1f,0f,1f));
 		EntityComponent sunTransform = new Transform(Type.TRANSFORM, 0, 200, 0, 0, 0, 0, 1);
 		EntityComponent sunController = new EntityController(Type.CONTROLLER) {
 

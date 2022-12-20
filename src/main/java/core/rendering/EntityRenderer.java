@@ -29,15 +29,13 @@ public final class EntityRenderer {
 		
 		entities_with_models = new HashMap<Model, ArrayList<Entity>>(); //All 
 		entities_without_models = new ArrayList<Entity>();
-		modelShader = new ModelShader("Engine/src/main/resources/assets/shaders/modelVertShader.txt",
-		"Engine/src/main/resources/assets/shaders/modelFragShader.txt");
+		modelShader = new ModelShader("src/main/resources/assets/shaders/modelVertShader.txt",
+		"src/main/resources/assets/shaders/modelFragShader.txt");
 	}
 
 	public void render(float dt) {
 
 		glUseProgram(modelShader.getID());
-		
-		
 		
 		tickEntitiesWithoutModels(dt);
 		renderEntitiesWithModels(dt);
