@@ -12,6 +12,7 @@ import richardson.wyatt.game_entities.entity.Transform;
 import richardson.wyatt.game_entities.entity.EntityComponent.Type;
 import richardson.wyatt.game_entities.lighting.Light;
 import richardson.wyatt.game_entities.model.Model;
+import richardson.wyatt.game_entities.textures.ModelTexture;
 import richardson.wyatt.rendering.shaders.ModelShader;
 import richardson.wyatt.utils.Math;
 
@@ -77,6 +78,11 @@ public final class EntityRenderer {
 			glEnableVertexAttribArray(1);
 			glEnableVertexAttribArray(2);
 
+			if(model.hasTexture()){
+				ModelTexture texture = model.getTexture();
+				glActiveTexture(texture.getUnit());
+				texture.bind();
+			}
 			List<Entity> batch = entities_with_models.get(model);
 			
 			for (Entity entity: batch) {
@@ -101,8 +107,11 @@ public final class EntityRenderer {
 			glDisableVertexAttribArray(0);
 			glDisableVertexAttribArray(1);
 			glDisableVertexAttribArray(2);
-
 			glBindVertexArray(0);
+
+			if(model.hasTexture()){
+				model.getTexture().unbind();
+			}
 
 		}
 	}

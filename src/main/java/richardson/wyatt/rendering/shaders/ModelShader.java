@@ -6,6 +6,9 @@ import richardson.wyatt.utils.Math;
 public class ModelShader extends ShaderProgram {
 	
 	public static final int MAX_LIGHTS = 4;
+
+	public static final int MAX_TEXTURES = 4;
+
 	public ModelShader(String vertPath, String fragPath) {
 		super();
 		programId = glCreateProgram();
@@ -40,6 +43,10 @@ public class ModelShader extends ShaderProgram {
 		}
 		for(int i = 0; i < MAX_LIGHTS; i++) {
 			uniformLocations.put("lightColors[" + i + "]", glGetUniformLocation(this.programId, "lightColors[" + i + "]"));
+		}
+		for(int i = 0; i < MAX_TEXTURES; i++) {
+			uniformLocations.put("texture" + i, glGetUniformLocation(this.programId, "texture" + i));
+			glUniform1i(uniformLocations.get("texture" + i), i);
 		}
 	}
 	

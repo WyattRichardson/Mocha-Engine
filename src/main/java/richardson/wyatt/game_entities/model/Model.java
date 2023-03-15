@@ -3,6 +3,7 @@ import static org.lwjgl.opengl.GL30.*;
 import java.io.FileNotFoundException;
 
 import richardson.wyatt.game_entities.entity.EntityComponent;
+import richardson.wyatt.game_entities.textures.ModelTexture;
 import richardson.wyatt.utils.OBJLoader;
 public class Model extends EntityComponent{
 	
@@ -12,6 +13,8 @@ public class Model extends EntityComponent{
 	
 	private int indicyCount;
 	
+	private ModelTexture texture = null;
+
 	public Model(Type type, String fName, int faceType){
 		super(type);
 		this.faceType = faceType;
@@ -59,6 +62,18 @@ public class Model extends EntityComponent{
 	
 	public int getVAO() {
 		return this.vaoID;
+	}
+
+	public void setTexture(ModelTexture tex){
+		this.texture = tex;
+	}
+
+	public ModelTexture getTexture(){
+		return this.texture;
+	}
+
+	public boolean hasTexture(){
+		return texture != null;
 	}
 
 }

@@ -4,7 +4,8 @@ public abstract class EntityComponent{
 	public enum Type {
 		TRANSFORM, 
 		MODEL, 
-		CONTROLLER
+		CONTROLLER,
+		TEXTURE
 	};
 	private Type type = null;
 	public EntityComponent(Type type) {

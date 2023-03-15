@@ -1,4 +1,5 @@
 package richardson.wyatt;
+
 import static org.lwjgl.opengl.GL30.*;
 
 import org.joml.Vector3f;
@@ -12,27 +13,26 @@ import richardson.wyatt.game_entities.entity.Transform;
 import richardson.wyatt.game_entities.entity.EntityComponent.Type;
 import richardson.wyatt.game_entities.lighting.Light;
 import richardson.wyatt.game_entities.model.Model;
+import richardson.wyatt.game_entities.textures.ModelTexture;
+import richardson.wyatt.game_entities.textures.Texture;
 import richardson.wyatt.utils.KeyInput;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Main {
-	
+
 	public static final int WINDOW_WIDTH = 1920;
 	public static final int WINDOW_HEIGHT = 1080;
 	public static final String WINDOW_TITLE = "Java Game Engine";
-	public static final float[] CLEAR_COLOR = {0.3f,0.3f,0.3f,1};
-	
-	
-	
-	
+	public static final float[] CLEAR_COLOR = { 0.3f, 0.3f, 0.3f, 1 };
+
 	public static void main(String[] args) {
 		
 		Scene testScene = new Scene(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, CLEAR_COLOR);
 		
 		
 		Entity mando = new Entity("Mando");
-		EntityComponent mandoModel = new Model(Type.MODEL, "Mandalorian.obj", GL_TRIANGLES);
+		Model mandoModel = new Model(Type.MODEL, "Mandalorian.obj", GL_TRIANGLES);
 		EntityComponent mandoTransform = new Transform(Type.TRANSFORM, 0, 0, -100, 0, 0, 0, 1);
 		EntityComponent mandoController = new EntityController(Type.CONTROLLER) {
 
@@ -56,6 +56,8 @@ public class Main {
 			}
 			
 		};
+		ModelTexture mandoTex = new ModelTexture("silvertex.png", GL_TEXTURE0);
+		mandoModel.setTexture(mandoTex);
 		mando.addComponent(mandoModel);
 		mando.addComponent(mandoTransform);
 		mando.addComponent(mandoController);
@@ -64,7 +66,7 @@ public class Main {
 
 		
 
-		Entity sun = new Light("Sun", new Vector3f(1f,0f,1f));
+		Entity sun = new Light("Sun", new Vector3f(1f,1f,1f));
 		EntityComponent sunTransform = new Transform(Type.TRANSFORM, 0, 200, 0, 0, 0, 0, 1);
 		EntityComponent sunController = new EntityController(Type.CONTROLLER) {
 
