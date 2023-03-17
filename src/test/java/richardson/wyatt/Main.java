@@ -99,7 +99,8 @@ public class Main {
 		Entity mainCam = new Camera("MainCamera");
 		EntityComponent mainCamTransform = new Transform(Type.TRANSFORM, 0, 0, 10, 0, 0, 0, 1);
 		EntityComponent mainCamController = new EntityController(Type.CONTROLLER) {
-			private float speed;
+			public static final int BASE_SPEED = 100;
+			private int speed;
 			private float turnSpeed = (float) Math.toRadians(180);
 			@Override
 			public void tick(float dt) {
@@ -108,23 +109,23 @@ public class Main {
 				transform.getRotation().x += MouseInput.deltaY * turnSpeed * dt;
 				
 				if(KeyInput.isKeyDown(GLFW_KEY_A)){
-					speed = 10;
+					speed = BASE_SPEED;
 					transform.getRotation().y -= 90;
 					findNextPos(dt, transform);
 					transform.getRotation().y += 90;
 				}
 				if(KeyInput.isKeyDown(GLFW_KEY_D)){
-					speed = 10;
+					speed = BASE_SPEED;
 					transform.getRotation().y += 90;
 					findNextPos(dt, transform);
 					transform.getRotation().y -= 90;
 				}
 				if(KeyInput.isKeyDown(GLFW_KEY_W)) {
-					speed = 10;
+					speed = BASE_SPEED;
 					findNextPos(dt, transform);
 				}
 				if(KeyInput.isKeyDown(GLFW_KEY_S)) {
-					speed = -10;
+					speed = -BASE_SPEED;
 					findNextPos(dt, transform);
 				}	
 			}
