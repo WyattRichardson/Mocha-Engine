@@ -5,6 +5,7 @@ layout (location = 2) in vec2 texCoord;
 
 uniform mat4 projectionMatrix;
 uniform mat4 transformationMatrix;
+uniform mat4 viewMatrix;
 uniform vec3 lightPositions[4];
 uniform vec3 lightColors[4];
 
@@ -20,6 +21,6 @@ void main(){
 	}
 	interpNormal = (transformationMatrix * vec4(normal,0.0)).xyz; //0.0 makes only rotation change
 	interpTexCoord = texCoord;
-	gl_Position = projectionMatrix * worldPosition; //always vertex data between -1, 1
+	gl_Position = projectionMatrix * viewMatrix * worldPosition; //always vertex data between -1, 1
 	
 }

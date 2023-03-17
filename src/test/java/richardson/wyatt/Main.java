@@ -32,7 +32,7 @@ public class Main {
 		
 		Entity mando = new Entity("Mando");
 		Model mandoModel = new Model(Type.MODEL, "Mandalorian.obj", GL_TRIANGLES);
-		EntityComponent mandoTransform = new Transform(Type.TRANSFORM, 0, 0, -100, 0, 0, 0, 1);
+		EntityComponent mandoTransform = new Transform(Type.TRANSFORM, 0, 0, -10, 0, 0, 0, 0.2f);
 		EntityComponent mandoController = new EntityController(Type.CONTROLLER) {
 
 			@Override
@@ -71,8 +71,37 @@ public class Main {
 
 			@Override
 			public void tick(float dt) {
-				Transform transform = (Transform) sunTransform;
-				float speed = 1000;
+//				Transform transform = (Transform) sunTransform;
+//				float speed = 1000;
+//				if(KeyInput.isKeyDown(GLFW_KEY_LEFT)){
+//					transform.getPosition().x -= (speed * dt);
+//				}
+//				if(KeyInput.isKeyDown(GLFW_KEY_RIGHT)) {
+//					transform.getPosition().x += (speed * dt);
+//				}
+//				if(KeyInput.isKeyDown(GLFW_KEY_UP)) {
+//					transform.getPosition().y += (speed * dt);
+//				}
+//				if(KeyInput.isKeyDown(GLFW_KEY_DOWN)) {
+//					transform.getPosition().y -= (speed * dt);
+//				}
+			}
+
+			
+		};
+		sun.addComponent(sunTransform);
+		sun.addComponent(sunController);
+		testScene.addEntity(sun);
+
+		
+		Entity mainCam = new Camera("MainCamera");
+		EntityComponent mainCamTransform = new Transform(Type.TRANSFORM, 0, 0, 10, 0, 0, 0, 1);
+		EntityComponent mainCamController = new EntityController(Type.CONTROLLER) {
+
+			@Override
+			public void tick(float dt) {
+				Transform transform = (Transform) mainCamTransform;
+				float speed = 10;
 				if(KeyInput.isKeyDown(GLFW_KEY_LEFT)){
 					transform.getPosition().x -= (speed * dt);
 				}
@@ -84,24 +113,7 @@ public class Main {
 				}
 				if(KeyInput.isKeyDown(GLFW_KEY_DOWN)) {
 					transform.getPosition().y -= (speed * dt);
-				}
-			}
-
-			
-		};
-		sun.addComponent(sunTransform);
-		sun.addComponent(sunController);
-		testScene.addEntity(sun);
-
-		
-		Entity mainCam = new Camera("MainCamera");
-		EntityComponent mainCamTransform = new Transform(Type.TRANSFORM, 0, 0, 0, 0, 0, 0, 1);
-		EntityComponent mainCamController = new EntityController(Type.CONTROLLER) {
-
-			@Override
-			public void tick(float dt) {
-				// TODO Auto-generated method stub
-				
+				}				
 			}
 			
 		};

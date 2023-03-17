@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.joml.Vector3f;
 
+import richardson.wyatt.game_entities.camera.Camera;
 import richardson.wyatt.game_entities.entity.Entity;
 import richardson.wyatt.game_entities.entity.EntityController;
 import richardson.wyatt.game_entities.entity.Transform;
@@ -24,13 +25,15 @@ public final class EntityRenderer {
 	public List<Entity> entities_without_models;
 
 	private ModelShader modelShader;
+	private Camera camera;
 
-	public EntityRenderer() { //TODO: implement camera functionality!
+	public EntityRenderer() {
 		
-		entities_with_models = new HashMap<Model, ArrayList<Entity>>(); //All 
+		entities_with_models = new HashMap<Model, ArrayList<Entity>>(); 
 		entities_without_models = new ArrayList<Entity>();
 		modelShader = new ModelShader("src/main/resources/assets/shaders/modelVertShader.txt",
 		"src/main/resources/assets/shaders/modelFragShader.txt");
+		
 	}
 
 	public void render(float dt) {
@@ -61,6 +64,7 @@ public final class EntityRenderer {
 						throw new NullPointerException();
 					}
 				}
+				
 			}else{
 				System.err.println("WARNING! ENTITY: " + entity.getId() + " DOES NOT HAVE CONTROLLER AND WAS SENT TO BE TICKED!");
 			}
@@ -97,8 +101,10 @@ public final class EntityRenderer {
 						controller.tick(dt);
 					}
 					float[] modelTransformMat = new float[16];
-					Math.createTransformationMatrix(transform.getPosition(), transform.getRotation(), transform.getScale())
-					.get(modelTransformMat);
+					float[] viewMatrix = new float[16];
+					Math.createTransformationMatrix(transform.getPosition(), transform.getRotation(), transform.getScale()).get(modelTransformMat);
+					Math.createViewMatrix((Transform) camera.getComponentByType(Type.TRANSFORM)).get(viewMatrix);
+					glUniformMatrix4fv(modelShader.uniformLocations.get("viewMatrix"), false, viewMatrix);
 					glUniformMatrix4fv(modelShader.uniformLocations.get("transformationMatrix"), false, modelTransformMat);
 					glDrawElements(model.getFaceType(), model.getIndicyCount(), GL_UNSIGNED_INT, 0);
 				}
@@ -129,8 +135,12 @@ public final class EntityRenderer {
 				entities_with_models.put(model, new ArrayList<Entity>());
 			}
 			entities_with_models.get(model).add(entity);
-		}else{
+		} else if(entity.getClass().getSimpleName().equals("Camera")){
+			camera = (Camera) entity;
+			entities_without_models.add(camera);
+		} else {
 			entities_without_models.add(entity);
+
 		}
 	}
 

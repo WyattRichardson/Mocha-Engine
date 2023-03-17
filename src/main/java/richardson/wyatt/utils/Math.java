@@ -5,6 +5,8 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFWVidMode;
 
+import richardson.wyatt.game_entities.entity.Transform;
+
 public final class Math {
 	private static final float FOV = 70;
 	private static final float NEAR_PLANE = 0.1f;
@@ -40,14 +42,15 @@ public final class Math {
         projectionMatrix.m33(0);
         return projectionMatrix;
 	}
-/*	public static Matrix4f createViewMatrix(Camera camera){
+	public static Matrix4f createViewMatrix(Transform camTransform){
 		  Matrix4f viewMatrix = new Matrix4f();
 		  viewMatrix.identity();
-		  viewMatrix.rotate((float) java.lang.Math.toRadians(camera.getRx()), new Vector3f(1,0,0), viewMatrix);
-		  viewMatrix.rotate((float) java.lang.Math.toRadians(camera.getRy()), new Vector3f(0,1,0), viewMatrix);
-		  Vector3f cameraPos = camera.getPosition();
+		  viewMatrix.rotate((float) java.lang.Math.toRadians(camTransform.getRotation().x), new Vector3f(1,0,0), viewMatrix);
+		  viewMatrix.rotate((float) java.lang.Math.toRadians(camTransform.getRotation().y), new Vector3f(0,1,0), viewMatrix);
+		  viewMatrix.rotate((float) java.lang.Math.toRadians(camTransform.getRotation().z), new Vector3f(0,0,1), viewMatrix);
+		  Vector3f cameraPos = camTransform.getPosition();
 		  Vector3f negativeCameraPos = new Vector3f(-cameraPos.x,-cameraPos.y,-cameraPos.z);
 		  viewMatrix.translate(negativeCameraPos, viewMatrix);
 		  return viewMatrix;
-	}*/
+	}
 }
