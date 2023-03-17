@@ -11,6 +11,7 @@ import org.lwjgl.opengl.GL;
 import richardson.wyatt.game_entities.entity.Entity;
 import richardson.wyatt.rendering.*;
 import richardson.wyatt.utils.KeyInput;
+import richardson.wyatt.utils.MouseInput;
 
 import static org.lwjgl.glfw.Callbacks.*;
 
@@ -40,6 +41,8 @@ public final class Scene {
 		glfwMakeContextCurrent(windowID);
 		glfwSwapInterval(1);
 		glfwSetKeyCallback(windowID, new KeyInput());
+		glfwSetCursorPosCallback(windowID, new MouseInput());
+		glfwSetInputMode(windowID, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		currentVidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 		System.out.println();
 		GL.createCapabilities();
@@ -63,13 +66,12 @@ public final class Scene {
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 		glEnable(GL_DEPTH_TEST);
-		while(!glfwWindowShouldClose(windowID)) {
+		while(!KeyInput.isKeyDown(GLFW_KEY_ESCAPE) && !glfwWindowShouldClose(windowID)) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			dt = (float)(System.currentTimeMillis() - lastTime) / 1000f;//(delta time in seconds)
 			glfwPollEvents();
-			
+			MouseInput.checkForStillMouse();
 			entityRenderer.render(dt);
-			
 			lastTime = System.currentTimeMillis();
 			glfwSwapBuffers(windowID);
 		}
