@@ -12,13 +12,14 @@ import richardson.wyatt.game_entities.entity.EntityComponent;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class Texture{
+public class Texture extends EntityComponent{
 	
 	private int width, height;
 	private int id;
 	private int unit;
 	
 	public Texture(String fName, int unit) {
+		super(Type.TEXTURE);
 		id = load("src/main/resources/assets/textures/" + fName);
 		this.unit = unit;
 	}

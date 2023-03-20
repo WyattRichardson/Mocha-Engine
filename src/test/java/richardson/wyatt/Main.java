@@ -33,9 +33,9 @@ public class Main {
 		
 		
 		Entity mando = new Entity("Mando");
-		Model mandoModel = new Model(Type.MODEL, "Mandalorian.obj", GL_TRIANGLES);
-		EntityComponent mandoTransform = new Transform(Type.TRANSFORM, 0, 0, -10, 0, 0, 0, 0.2f);
-		EntityComponent mandoController = new EntityController(Type.CONTROLLER) {
+		Model mandoModel = new Model("Mandalorian.obj", GL_TRIANGLES);
+		EntityComponent mandoTransform = new Transform(0, 0, -10, 0, 0, 0, 0.2f);
+		EntityComponent mandoController = new EntityController() {
 
 			@Override
 			public void tick(float dt) {
@@ -68,8 +68,8 @@ public class Main {
 		
 
 		Entity sun = new Light("Sun", new Vector3f(1f,1f,1f));
-		EntityComponent sunTransform = new Transform(Type.TRANSFORM, 0, 200, 200, 0, 0, 0, 1);
-		EntityComponent sunController = new EntityController(Type.CONTROLLER) {
+		EntityComponent sunTransform = new Transform(0, 200, 200, 0, 0, 0, 1);
+		EntityComponent sunController = new EntityController() {
 
 			@Override
 			public void tick(float dt) {
@@ -97,11 +97,11 @@ public class Main {
 
 		
 		Entity mainCam = new Camera("MainCamera");
-		EntityComponent mainCamTransform = new Transform(Type.TRANSFORM, 0, 0, 10, 0, 0, 0, 1);
-		EntityComponent mainCamController = new EntityController(Type.CONTROLLER) {
+		EntityComponent mainCamTransform = new Transform(0, 0, 10, 0, 0, 0, 1);
+		EntityComponent mainCamController = new EntityController() {
 			public static final int BASE_SPEED = 100;
 			private int speed;
-			private float turnSpeed = (float) Math.toRadians(180);
+			private float turnSpeed = 10;
 			@Override
 			public void tick(float dt) {
 				Transform transform = (Transform) mainCamTransform;

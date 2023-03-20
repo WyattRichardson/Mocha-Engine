@@ -13,11 +13,23 @@ public class Model extends EntityComponent{
 	
 	private int indicyCount;
 	
-	private ModelTexture texture = null;
+	private ModelTexture texture;
 
-	public Model(Type type, String fName, int faceType){
-		super(type);
+	public Model(String fName, int faceType){
+		super(Type.MODEL);
 		this.faceType = faceType;
+		if(fName.endsWith(".obj")) {
+			loadFromOBJ(fName);
+		}else if(fName.endsWith(".dae")) {
+			loadFromCollada(fName);
+		}
+	}
+	
+	private void loadFromCollada(String fName) {
+		
+	}
+	
+	private void loadFromOBJ(String fName) {
 		vaoID = glGenVertexArrays();
 		try {
 			OBJLoader.readOBJ("src/main/resources/assets/models/" + fName, faceType);
@@ -50,7 +62,6 @@ public class Model extends EntityComponent{
 		glBindVertexArray(0);
 		
 		OBJLoader.flushData();
-		
 	}
 	
 	public int getFaceType() {

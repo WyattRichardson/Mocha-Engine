@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.lwjgl.system.MemoryUtil.MemoryAllocator;
+
 import static org.lwjgl.opengl.GL30.*;
 
 public class OBJLoader {
@@ -153,26 +155,25 @@ public class OBJLoader {
 			}
 			
 		}
-		
-		flushArrays();//no longer need arrayLists
-		
+				
 	}
 	
 	private static void flushArrays() { //flush arrayLists
 		
+		vertsArray.clear();
 		vertsArray = null;
+		normsArray.clear();
 		normsArray = null;
+		tcArray.clear();
 		tcArray = null;
 		
 	}
 	
 	public static void flushData() { //flush raw arrays
-		
 		vertices = null;
 		indices = null;
 		texCoords = null;
 		normals = null;
-		
 	}
 	
 }

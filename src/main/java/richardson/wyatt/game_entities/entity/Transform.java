@@ -6,8 +6,8 @@ public class Transform extends EntityComponent{
 	private Vector3f rotation;
 	private float scale;
 	
-	public Transform(Type type, float x, float y, float z, float rx, float ry, float rz, float scale) {
-		super(type);
+	public Transform(float x, float y, float z, float rx, float ry, float rz, float scale) {
+		super(Type.TRANSFORM);
 		position = new Vector3f(x, y, z);
 		rotation = new Vector3f(rx, ry, rz);
 		this.scale = scale;

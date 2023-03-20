@@ -5,7 +5,8 @@ public abstract class EntityComponent{
 		TRANSFORM, 
 		MODEL, 
 		CONTROLLER,
-		TEXTURE
+		TEXTURE,
+		ANIMATION
 	};
 	private Type type = null;
 	public EntityComponent(Type type) {

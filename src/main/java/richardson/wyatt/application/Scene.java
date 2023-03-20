@@ -29,9 +29,7 @@ public final class Scene {
 	public long windowID;
 	
 	public EntityRenderer entityRenderer;
-	
-	public TerrainRenderer terrainRenderer;
-		
+			
 	public static GLFWVidMode currentVidMode = null;
 	
 	
