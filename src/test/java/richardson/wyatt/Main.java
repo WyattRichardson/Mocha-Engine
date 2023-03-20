@@ -2,6 +2,8 @@ package richardson.wyatt;
 
 import static org.lwjgl.opengl.GL30.*;
 
+import java.io.FileNotFoundException;
+
 import org.joml.Math;
 import org.joml.Vector3f;
 
@@ -15,6 +17,7 @@ import richardson.wyatt.game_entities.entity.EntityComponent.Type;
 import richardson.wyatt.game_entities.lighting.Light;
 import richardson.wyatt.game_entities.model.Model;
 import richardson.wyatt.game_entities.textures.ModelTexture;
+import richardson.wyatt.utils.ColladaLoader;
 import richardson.wyatt.utils.KeyInput;
 import richardson.wyatt.utils.MouseInput;
 
@@ -143,6 +146,13 @@ public class Main {
 		((Camera) mainCam).setActive(true);
 		testScene.addEntity(mainCam);
 	
+		
+		try {
+			ColladaLoader.readCollada("src/main/resources/assets/models/LowPolyCharacter.dae", GL_TRIANGLES);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
 		testScene.init(); 
 		
 	}
