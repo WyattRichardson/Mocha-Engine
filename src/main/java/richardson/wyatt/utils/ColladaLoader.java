@@ -9,7 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -114,13 +114,10 @@ public class ColladaLoader {
 
 	
 	private static String findTagName(String line) {
-		int i = 1;
-		StringBuilder builder = new StringBuilder();
-		while(line.charAt(i) != '>') {
-			builder.append(line.charAt(i));
-			i++;
-		}
-		return builder.toString();
+		Pattern pattern = Pattern.compile("<(.+?)>");
+		Matcher matcher = pattern.matcher(line);
+		matcher.find();
+		return matcher.group(1);
 	}
 	
 	
