@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.joml.Vector2f;
@@ -20,191 +21,200 @@ public class ColladaLoader {
 	public static float[] texCoords;
 	public static float[] normals;
 	public static int[] indices;
-	
-	private static int faceType;
+
 	private static FileReader fr;
 	private static BufferedReader reader;
 	private static String path;
-	
+
 	private static ArrayList<Vector3f> vertsArray;
-	private static ArrayList<Vector2f> tcArray;
+	private static ArrayList<Vector2f> tCArray;
 	private static ArrayList<Vector3f> normsArray;
 	private static ArrayList<String[]> faces;
-	
-	public static void readCollada(String path, int faceType) throws FileNotFoundException { //TODO: Check to see if data contains normals and texcoords and exclude arranging them if not.
-		ColladaLoader.faceType = faceType;
+
+	public static void readCollada(String path) throws FileNotFoundException { 
 		ColladaLoader.path = path;
 		fr = new FileReader(new File(path));
 		reader = new BufferedReader(fr);
-		
+
 		readToArrays();
 		arrangeData();
 		flushArrays();
-		
+
 	}
-	
+
 	private static void readToArrays() {
-		
+
 		vertsArray = new ArrayList<Vector3f>();
-		tcArray = new ArrayList<Vector2f>();
+		tCArray = new ArrayList<Vector2f>();
 		normsArray = new ArrayList<Vector3f>();
 		faces = new ArrayList<String[]>();
-		
+
 		String line;
 		try {
-			line = reader.readLine();
-			while(line != null) {
-				line = line.strip();
+			line = reader.readLine().trim();
+			while (line != null) {
+				line = line.trim();
 				String tagName = findTagName(line);
-				if(tagName.equals("library_geometries")) {
+				if (tagName.equals("library_geometries")) {
 					readGeometries(reader);
 				}
-				if(tagName.equals("library_controllers")) {
-					//TODO: Implement.
+				if (tagName.equals("library_controllers")) {
+					// TODO: Implement.
 				}
-				if(tagName.equals("library_animations")) {
-					//TODO: Implement.
+				if (tagName.equals("library_animations")) {
+					// TODO: Implement.
 				}
-				if(tagName.equals("library_visual_scenes")) {
-					//TODO: Implement.
+				if (tagName.equals("library_visual_scenes")) {
+					// TODO: Implement.
 				}
-//				if(line.startsWith("v ")) {
-//				
-//					vertsArray.add(new Vector3f(Float.parseFloat(elements[1]), Float.parseFloat(elements[2]), Float.parseFloat(elements[3])));
-//				
-//				}else if(line.startsWith("vt ")) {
-//					
-//					tcArray.add(new Vector2f(Float.parseFloat(elements[1]), Float.parseFloat(elements[2])));
-//				
-//				}else if(line.startsWith("vn ")) {
-//				
-//					normsArray.add(new Vector3f(Float.parseFloat(elements[1]), Float.parseFloat(elements[2]), Float.parseFloat(elements[3])));
-//
-//					
-//				}else if(line.startsWith("f ")) {
-//					
-//					if(faceType == GL_QUADS) {
-//						faces.add(new String[]{elements[1], elements[2], elements[3], elements[4]});
-//					}else if(faceType == GL_TRIANGLES) {
-//						faces.add(new String[]{elements[1], elements[2], elements[3]});
-//					}
-//					
-//				}
-				
-				
-				
-				
-				
-				
 				line = reader.readLine();
-				
+
 			}
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.err.println("Could not read file: " + path);
 		}
-		
+
 	}
-	
+
 	private static void readGeometries(BufferedReader reader) throws IOException {
+		String line = reader.readLine().trim();
+		while (!findTagName(line).endsWith("mesh-positions\"")) { // POSITIONS
+			line = reader.readLine().trim();
+		}
+		line = reader.readLine().trim();
+		Pattern p = Pattern.compile("<(.+?)>(.+?)</(.+?)>");
+		Matcher m = p.matcher(line);
+		m.find();
+		String[] vertPositions = m.group(2).split(" ");
+		Vector3f pos = new Vector3f();
+		for (int i = 0; i < vertPositions.length; i++) { // Adds all the vertex positions found in vertPositions array
+															// into vertsArray as Vector3f objects.
+			if ((i + 1) % 3 == 1) {
+				pos.x = Float.parseFloat(vertPositions[i]);
+				pos.y = Float.parseFloat(vertPositions[i + 1]);
+				pos.z = Float.parseFloat(vertPositions[i + 2]);
+				vertsArray.add(pos);
+				pos = new Vector3f();
+			}
+		}
+		line = reader.readLine().trim();
+		while (!findTagName(line).endsWith("mesh-normals\"")) { // NORMALS
+			line = reader.readLine().trim();
+		}
+		line = reader.readLine().trim();
+		m = p.matcher(line);
+		m.find();
+		String[] norms = m.group(2).split(" ");
+		Vector3f norm = new Vector3f();
+		for (int i = 0; i < norms.length; i++) { // See above.
+			if ((i + 1) % 3 == 1) {
+				norm.x = Float.parseFloat(norms[i]);
+				norm.y = Float.parseFloat(norms[i + 1]);
+				norm.z = Float.parseFloat(norms[i + 2]);
+				normsArray.add(norm);
+				norm = new Vector3f();
+			}
+		}
+		line = reader.readLine().trim();
+		while (!findTagName(line).endsWith("mesh-map-0\"")) { // TEXTURE COORDINATES
+			line = reader.readLine().trim();
+		}
+		line = reader.readLine().trim();
+		m = p.matcher(line);
+		m.find();
+		String[] tCs = m.group(2).split(" ");
+		Vector2f tC = new Vector2f();
+		for (int i = 0; i < tCs.length; i++) {
+			if ((i + 1) % 2 == 1) {
+				tC.x = Float.parseFloat(tCs[i]);
+				tC.y = Float.parseFloat(tCs[i + 1]);
+				tCArray.add(tC);
+				tC = new Vector2f();
+			}
+		}
+		line = reader.readLine().trim();
+		while (!findTagName(line).equals("p")) {
+			line = reader.readLine().trim();
+		}
+		m = p.matcher(line);
+		m.find();
+		String[] elements = m.group(2).split(" ");
+		String[] face = new String[3];
+		for (int i = 0; i < elements.length; i += 9) {
+			StringBuilder builder = new StringBuilder();
+			face[0] = elements[i] + "/" + elements[i + 1] + "/" + elements[i + 2];
+			face[1] = elements[i + 3] + "/" + elements[i + 4] + "/" + elements[i + 5];
+			face[2] = elements[i + 6] + "/" + elements[i + 7] + "/" + elements[i + 8];
+			faces.add(face);
+			face = new String[3];
+		}
 
-	
 	}
 
-	
 	private static String findTagName(String line) {
-		int i = 1;
-		StringBuilder builder = new StringBuilder();
-		while(line.charAt(i) != '>') {
-			builder.append(line.charAt(i));
-			i++;
-		}
-		return builder.toString();
+		Pattern p = Pattern.compile("<(.+?)>");
+		Matcher m = p.matcher(line);
+		m.find();
+		return m.group(1);
 	}
-	
-	
-	private static void arrangeData() { //fill raw arrays according to face data
-		
+
+	private static void arrangeData() { // fill raw arrays according to face data
+
 		vertices = new float[vertsArray.size() * 3];
-		for(int i = 0; i < vertsArray.size(); i++) { //fill raw vertices array
-			
-			vertices[(i*3)] = vertsArray.get(i).x;
-			vertices[(i*3) + 1] = vertsArray.get(i).y;
-			vertices[(i*3) + 2] = vertsArray.get(i).z;
-			
+		for (int i = 0; i < vertsArray.size(); i++) { // fill raw vertices array
+
+			vertices[(i * 3)] = vertsArray.get(i).x;
+			vertices[(i * 3) + 1] = vertsArray.get(i).y;
+			vertices[(i * 3) + 2] = vertsArray.get(i).z;
+
 		}
-		
+
 		texCoords = new float[vertsArray.size() * 2];
 		normals = new float[vertsArray.size() * 3];
-		
-		if(faceType == GL_TRIANGLES) { //allocate raw indices array according to faceType
-			indices = new int[faces.size() * 3];
-		}else if(faceType == GL_QUADS) {
-			indices = new int[faces.size() * 4];
-		}
-		
-		for(int i = 0; i < faces.size(); i++) { //go through every vertex in every face and sort/fill accordingly
-			
+
+								
+		indices = new int[faces.size() * 3]; // allocate raw indices array 
+
+		for (int i = 0; i < faces.size(); i++) { // go through every vertex in every face and sort/fill accordingly
+
 			String[] face = faces.get(i);
-			
-			if(faceType == GL_TRIANGLES) {
-				
-				for(int z = 0; z < 3; z++) {
-					
-					String[] currentVertex = face[z].split("/");
-					int currentIndex = Integer.parseInt(currentVertex[0]) - 1;
-					indices[(i*3) + z] = currentIndex; //passing currentIndex of every vertex in every face into raw indices array
-					Vector3f currentNormal = normsArray.get(Integer.parseInt(currentVertex[2]) - 1);
-					Vector2f currentTexCoord = tcArray.get(Integer.parseInt(currentVertex[1]) - 1);
-					
-					normals[(currentIndex*3)] = currentNormal.x;
-					normals[(currentIndex*3) + 1] = currentNormal.y;
-					normals[(currentIndex*3) + 2] = currentNormal.z;
-					
-					texCoords[(currentIndex*2)] = currentTexCoord.x;
-					texCoords[(currentIndex*2) + 1] = currentTexCoord.y;
-							
-				}
-				
-				
-			}else if(faceType == GL_QUADS) {
-				
-				for(int z = 0; z < 4; z++) {
-					
-					String[] currentVertex = face[z].split("/");
-					int currentIndex = Integer.parseInt(currentVertex[0]) - 1;
-					indices[(i*4) + z] = currentIndex;//passing currentIndex of every vertex in every face into raw indices array
-					Vector3f currentNormal = normsArray.get(Integer.parseInt(currentVertex[2]) - 1);
-					Vector2f currentTexCoord = tcArray.get(Integer.parseInt(currentVertex[1]) - 1);
-					
-					normals[(currentIndex*3)] = currentNormal.x;
-					normals[(currentIndex*3) + 1] = currentNormal.y;
-					normals[(currentIndex*3) + 2] = currentNormal.z;
-					
-					texCoords[(currentIndex*2)] = currentTexCoord.x;
-					texCoords[(currentIndex*2) + 1 ] = currentTexCoord.y;
-							
-				}
-				
+
+			for (int z = 0; z < 3; z++) {
+
+				String[] currentVertex = face[z].split("/");
+				int currentIndex = Integer.parseInt(currentVertex[0]);
+				indices[(i * 3) + z] = currentIndex; // passing currentIndex of every vertex in every face into raw
+														// indices array
+				Vector3f currentNormal = normsArray.get(Integer.parseInt(currentVertex[1]));
+				Vector2f currentTexCoord = tCArray.get(Integer.parseInt(currentVertex[2]));
+
+				normals[(currentIndex * 3)] = currentNormal.x;
+				normals[(currentIndex * 3) + 1] = currentNormal.y;
+				normals[(currentIndex * 3) + 2] = currentNormal.z;
+
+				texCoords[(currentIndex * 2)] = currentTexCoord.x;
+				texCoords[(currentIndex * 2) + 1] = currentTexCoord.y;
+
 			}
-			
+
 		}
-				
+
 	}
-	
-	private static void flushArrays() { //flush arrayLists
-		
+
+	private static void flushArrays() { // flush arrayLists
+
 		vertsArray.clear();
 		vertsArray = null;
 		normsArray.clear();
 		normsArray = null;
-		tcArray.clear();
-		tcArray = null;
-		
+		tCArray.clear();
+		tCArray = null;
+
 	}
-	
-	public static void flushData() { //flush raw arrays
+
+	public static void flushData() { // flush raw arrays
 		vertices = null;
 		indices = null;
 		texCoords = null;

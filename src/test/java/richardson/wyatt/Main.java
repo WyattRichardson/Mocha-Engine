@@ -34,40 +34,40 @@ public class Main {
 		
 		Scene testScene = new Scene(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, CLEAR_COLOR);
 		
-		
-		Entity mando = new Entity("Mando");
-		Model mandoModel = new Model("Mandalorian.obj", GL_TRIANGLES);
-		EntityComponent mandoTransform = new Transform(0, 0, -10, 0, 0, 0, 0.2f);
-		EntityComponent mandoController = new EntityController() {
+//		
+//		Entity mando = new Entity("Mando");
+//		Model mandoModel = new Model("Mandalorian.obj", GL_TRIANGLES);
+//		EntityComponent mandoTransform = new Transform(0, 0, -10, 0, 0, 0, 0.2f);
+//		EntityComponent mandoController = new EntityController() {
+//
+//			@Override
+//			public void tick(float dt) {
+//			}
+//			
+//		};
+//		ModelTexture mandoTex = new ModelTexture("metal.png", GL_TEXTURE0);
+//		mandoModel.setTexture(mandoTex);
+//		mando.addComponent(mandoModel);
+//		mando.addComponent(mandoTransform);
+//		mando.addComponent(mandoController);
+//		testScene.addEntity(mando);
+//		
+		Entity lowPolyCharacter = new Entity("LowPolyCharacter");
+		Model lPCModel = new Model("LowPolyCharacter.dae", GL_TRIANGLES);
+		EntityComponent lPCTransform = new Transform(0, 0, -1, 0, 0, 0, 1f);
+		EntityComponent lPCController = new EntityController() {
 
 			@Override
 			public void tick(float dt) {
-//				float turnSpeed = 180;
-//				Transform trans = (Transform) mandoTransform;
-//				if(KeyInput.isKeyDown(GLFW_KEY_W)){
-//					trans.getRotation().x += turnSpeed * dt;
-//				}
-//				if(KeyInput.isKeyDown(GLFW_KEY_A)){
-//					trans.getRotation().y -= turnSpeed * dt;
-//				}
-//				if(KeyInput.isKeyDown(GLFW_KEY_S)){
-//					trans.getRotation().x -= turnSpeed * dt;
-//				}
-//				if(KeyInput.isKeyDown(GLFW_KEY_D)){
-//					trans.getRotation().y += turnSpeed * dt;
-//				}
-				
 			}
 			
 		};
 		ModelTexture mandoTex = new ModelTexture("metal.png", GL_TEXTURE0);
-		mandoModel.setTexture(mandoTex);
-		mando.addComponent(mandoModel);
-		mando.addComponent(mandoTransform);
-		mando.addComponent(mandoController);
-		testScene.addEntity(mando);
-		
-
+		lPCModel.setTexture(mandoTex);
+		lowPolyCharacter.addComponent(lPCModel);
+		lowPolyCharacter.addComponent(lPCTransform);
+		lowPolyCharacter.addComponent(lPCController);
+		testScene.addEntity(lowPolyCharacter);
 		
 
 		Entity sun = new Light("Sun", new Vector3f(1f,1f,1f));
@@ -102,9 +102,9 @@ public class Main {
 		Entity mainCam = new Camera("MainCamera");
 		EntityComponent mainCamTransform = new Transform(0, 0, 10, 0, 0, 0, 1);
 		EntityComponent mainCamController = new EntityController() {
-			public static final int BASE_SPEED = 100;
+			public static final int BASE_SPEED = 20;
 			private int speed;
-			private float turnSpeed = 10;
+			private float turnSpeed = 3;
 			@Override
 			public void tick(float dt) {
 				Transform transform = (Transform) mainCamTransform;
@@ -147,11 +147,7 @@ public class Main {
 		testScene.addEntity(mainCam);
 	
 		
-		try {
-			ColladaLoader.readCollada("src/main/resources/assets/models/LowPolyCharacter.dae", GL_TRIANGLES);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		
 		
 		testScene.init(); 
 		
