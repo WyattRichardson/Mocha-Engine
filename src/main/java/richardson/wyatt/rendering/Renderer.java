@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.joml.Vector3f;
 
-import richardson.wyatt.game_entities.camera.Camera;
+import richardson.wyatt.application.Camera;
 import richardson.wyatt.game_entities.entity.Entity;
 import richardson.wyatt.game_entities.entity.EntityController;
 import richardson.wyatt.game_entities.entity.Transform;
@@ -19,15 +19,15 @@ import richardson.wyatt.utils.Math;
 
 import static org.lwjgl.opengl.GL30.*;
 
-public final class EntityRenderer {
+public final class Renderer {
 
 	public Map<Model, ArrayList<Entity>> entities_with_models;
 	public List<Entity> entities_without_models;
 
 	private ModelShader modelShader;
-	private Camera camera;
+	private Camera activeCam;
 
-	public EntityRenderer() {
+	public Renderer() {
 		
 		entities_with_models = new HashMap<Model, ArrayList<Entity>>(); 
 		entities_without_models = new ArrayList<Entity>();
@@ -36,9 +36,15 @@ public final class EntityRenderer {
 		
 	}
 
-	public void render(float dt) {
-
+	public void render(float dt, Camera activeCam) {
+		this.activeCam = activeCam;
+		
 		glUseProgram(modelShader.getID());
+		
+		if(activeCam.hasController()) {
+			EntityController camController = (EntityController) activeCam.getComponentByType(Type.CONTROLLER);
+			camController.tick(dt);
+		}
 		
 		tickEntitiesWithoutModels(dt);
 		renderEntitiesWithModels(dt);
@@ -47,26 +53,23 @@ public final class EntityRenderer {
 
 	}
 
-	public void tickEntitiesWithoutModels(float dt) throws NullPointerException {
+	public void tickEntitiesWithoutModels(float dt) {
 		for (Entity entity : entities_without_models) {
 			if (entity.hasController()) {
 				EntityController controller = (EntityController) entity.getComponentByType(Type.CONTROLLER);
 				controller.tick(dt);
-				if(entity.getClass().getSimpleName().equals("Light")){//TEST THIS
-					Light light = (Light) entity;
+				if(entity.hasLight()){//TEST THIS
+					Light light = (Light) entity.getComponentByType(Type.LIGHT);
 					int uniformIndex = light.getUniformIndex();
-					if(light.hasTransform()){
-						Transform transform = (Transform) light.getComponentByType(Type.TRANSFORM);
+					if(entity.hasTransform()){
+						Transform transform = (Transform) entity.getComponentByType(Type.TRANSFORM);
 						glUniform3f(modelShader.uniformLocations.get("lightPositions[" + uniformIndex + "]"), transform.getPosition().x, transform.getPosition().y, transform.getPosition().z);
 						glUniform3f(modelShader.uniformLocations.get("lightColors[" + uniformIndex + "]"), light.getColor().x, light.getColor().y, light.getColor().z);
 					}else{
-						System.err.println("LIGHT: " + light.getId() + " DOES NOT HAVE A TRANSFORM AND WAS SENT TO BE TICKED!");
-						throw new NullPointerException();
+						System.err.println("ENTITY WITH LIGHT: " + entity.getId() + " HAS NO TRANSFORM!");
+						throw new IllegalStateException();
 					}
 				}
-				
-			}else{
-				System.err.println("WARNING! ENTITY: " + entity.getId() + " DOES NOT HAVE CONTROLLER AND WAS SENT TO BE TICKED!");
 			}
 		}
 	}
@@ -103,7 +106,7 @@ public final class EntityRenderer {
 					float[] modelTransformMat = new float[16];
 					float[] viewMatrix = new float[16];
 					Math.createTransformationMatrix(transform.getPosition(), transform.getRotation(), transform.getScale()).get(modelTransformMat);
-					Math.createViewMatrix((Transform) camera.getComponentByType(Type.TRANSFORM)).get(viewMatrix);
+					Math.createViewMatrix((Transform) activeCam.getComponentByType(Type.TRANSFORM)).get(viewMatrix);
 					glUniformMatrix4fv(modelShader.uniformLocations.get("viewMatrix"), false, viewMatrix);
 					glUniformMatrix4fv(modelShader.uniformLocations.get("transformationMatrix"), false, modelTransformMat);
 					glDrawElements(model.getFaceType(), model.getIndicyCount(), GL_UNSIGNED_INT, 0);
@@ -135,10 +138,7 @@ public final class EntityRenderer {
 				entities_with_models.put(model, new ArrayList<Entity>());
 			}
 			entities_with_models.get(model).add(entity);
-		} else if(entity.getClass().getSimpleName().equals("Camera")){
-			camera = (Camera) entity;
-			entities_without_models.add(camera);
-		} else {
+		}else {
 			entities_without_models.add(entity);
 
 		}
@@ -146,8 +146,9 @@ public final class EntityRenderer {
 
 	public void cleanUp() {
 		glDeleteProgram(modelShader.getID());
-		// TODO: cycle through all models and call a cleanup function defined within
-		// Model class
+		for(Model m: entities_with_models.keySet()) {
+			m.cleanUp();
+		}
 	}
 
 }

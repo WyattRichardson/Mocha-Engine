@@ -12,6 +12,9 @@ public class Entity {
 	private boolean hasController = false;
 	private boolean hasModel = false;
 	private boolean hasTransform = false;
+	private boolean hasLight = false;
+	private boolean hasAnimation = false;
+	private boolean hasTexture = false;
 
 	public Entity(String id) {
 		components = new ArrayList<EntityComponent>();
@@ -45,12 +48,23 @@ public class Entity {
 				break; 
 			case TRANSFORM:
 				hasTransform = true;
-				break; 
+				break;
+			case LIGHT:
+				hasLight = true;
+				break;
+			case ANIMATION:
+				hasAnimation = true;
+				break;
+			case TEXTURE:
+				hasTexture = true;
 		}
 		components.add(component);
 	}
 	public boolean hasController(){
 		return hasController;
+	}
+	public boolean hasLight() {
+		return hasLight;
 	}
 	public boolean hasModel(){
 		return hasModel;
@@ -58,8 +72,15 @@ public class Entity {
 	public boolean hasTransform(){
 		return hasTransform;
 	}
+	public boolean hasAnimation() {
+		return hasAnimation;
+	}
+	public boolean hasTexture() {
+		return hasTexture;
+	}
 	public String getId(){
 		return this.id;
 	}
+	
 	
 }

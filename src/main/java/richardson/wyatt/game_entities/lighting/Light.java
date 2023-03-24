@@ -2,13 +2,14 @@ package richardson.wyatt.game_entities.lighting;
 import org.joml.Vector3f;
 
 import richardson.wyatt.game_entities.entity.Entity;
-public class Light extends Entity {
+import richardson.wyatt.game_entities.entity.EntityComponent;
+public class Light extends EntityComponent {
 	
 	private Vector3f color;
 	public static int modelLightIndex = 0;
 	private int uniformIndex;
-	public Light(String entityId, Vector3f color) {
-		super(entityId);
+	public Light(Vector3f color) {
+		super(Type.LIGHT);
 		this.color = color;
 		uniformIndex = modelLightIndex;
 		modelLightIndex += 1;

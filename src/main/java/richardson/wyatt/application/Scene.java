@@ -4,9 +4,13 @@ import static org.lwjgl.glfw.GLFW.*;
 
 import static org.lwjgl.opengl.GL30.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.openvr.VREventEditingCameraSurface;
 
 import richardson.wyatt.game_entities.entity.Entity;
 import richardson.wyatt.rendering.*;
@@ -27,10 +31,11 @@ public final class Scene {
 	}
 	
 	public long windowID;
-	
-	public EntityRenderer entityRenderer;
-			
+	public Renderer renderer;
+	public Camera activeCamera;
 	public static GLFWVidMode currentVidMode = null;
+
+	private List<Camera> cameras;
 	
 	
 	public Scene(int width, int height, String title, float[] clearColor) { 
@@ -45,17 +50,15 @@ public final class Scene {
 		System.out.println();
 		GL.createCapabilities();
 		glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
-		entityRenderer = new EntityRenderer();
+		renderer = new Renderer();
+		cameras = new ArrayList<Camera>();
 	}
 	
 	public void init() {
-		//Initialization logic
+		// Initialization logic.
 				
 		run();
-		glfwFreeCallbacks(windowID);
-		glfwDestroyWindow(windowID);
-		glfwTerminate();
-		glfwSetErrorCallback(null).free();
+		cleanUp();
 	}
 	
 	public void run() {
@@ -69,17 +72,38 @@ public final class Scene {
 			dt = (float)(System.currentTimeMillis() - lastTime) / 1000f;//(delta time in seconds)
 			glfwPollEvents();
 			MouseInput.checkForStillMouse();
-			entityRenderer.render(dt);
+			switchCamera();
+			renderer.render(dt, activeCamera);
 			lastTime = System.currentTimeMillis();
 			glfwSwapBuffers(windowID);
 		}
 	}
 	
+	private void switchCamera() {
+		for(Camera c: cameras) {
+			if(c.isActive()) {
+				activeCamera = c;
+				return;
+			}
+		}
+		System.err.println("NO ACTIVE CAMERA!");
+		throw new IllegalStateException();
+	}
+	
+	
 	public void addEntity(Entity entity) {
-		entityRenderer.addEntity(entity);
+		if(entity.getClass().getSimpleName().equals("Camera")) {
+			cameras.add((Camera)entity);
+		}else {
+			renderer.addEntity(entity);
+		}
 	}
 	public void cleanUp() {
-		entityRenderer.cleanUp();
+		glfwFreeCallbacks(windowID);
+		glfwDestroyWindow(windowID);
+		glfwTerminate();
+		glfwSetErrorCallback(null).free();
+		renderer.cleanUp();
 	}
 	
 	

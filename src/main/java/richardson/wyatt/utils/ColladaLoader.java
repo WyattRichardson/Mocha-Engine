@@ -59,16 +59,14 @@ public class ColladaLoader {
 				String tagName = findTagName(line);
 				if (tagName.equals("library_geometries")) {
 					readGeometries(reader);
-				}
-				if (tagName.equals("library_controllers")) {
+				}else if (tagName.equals("library_controllers")) {
+					// TODO: Implement.
+				}else if (tagName.equals("library_animations")) {
+					// TODO: Implement.
+				}else if (tagName.equals("library_visual_scenes")) {
 					// TODO: Implement.
 				}
-				if (tagName.equals("library_animations")) {
-					// TODO: Implement.
-				}
-				if (tagName.equals("library_visual_scenes")) {
-					// TODO: Implement.
-				}
+				
 				line = reader.readLine();
 
 			}
@@ -152,7 +150,8 @@ public class ColladaLoader {
 			faces.add(face);
 			face = new String[3];
 		}
-
+		
+		
 	}
 
 	private static String findTagName(String line) {
@@ -202,6 +201,8 @@ public class ColladaLoader {
 				texCoords[(currentIndex * 2) + 1] = currentTexCoord.y;
 
 			}
+			
+			
 
 		}
 	}

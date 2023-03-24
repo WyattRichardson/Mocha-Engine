@@ -70,8 +70,12 @@ public class Texture extends EntityComponent{
 		return result;
 	}
 
+	public int getId() {
+		return this.id;
+	}
 	public int getUnit(){
 		return this.unit;
 	}
+	
 
 }

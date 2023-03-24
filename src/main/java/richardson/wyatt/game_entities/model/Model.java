@@ -40,7 +40,6 @@ public class Model extends EntityComponent{
 		int normsVBOID = glGenBuffers();
 		int tcVBOID = glGenBuffers();
 		int indVBOID = glGenBuffers();
-		int pFNVBOId = glGenBuffers();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indVBOID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, ColladaLoader.indices, GL_STATIC_DRAW);
 		this.indicyCount = ColladaLoader.indices.length;
@@ -51,7 +50,7 @@ public class Model extends EntityComponent{
 		
 		glBindBuffer(GL_ARRAY_BUFFER, normsVBOID);
 		glBufferData(GL_ARRAY_BUFFER, ColladaLoader.normals, GL_STATIC_DRAW);
-		glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0); //TODO: change normalized bool for fun to see what happens to lighting
+		glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
 		
 		glBindBuffer(GL_ARRAY_BUFFER, tcVBOID);
 		glBufferData(GL_ARRAY_BUFFER, ColladaLoader.texCoords, GL_STATIC_DRAW);
@@ -120,6 +119,13 @@ public class Model extends EntityComponent{
 
 	public boolean hasTexture(){
 		return texture != null;
+	}
+	
+	public void cleanUp() {
+		if(hasTexture()) {
+			glDeleteTextures(texture.getId());
+		}
+		glDeleteVertexArrays(vaoID);
 	}
 
 }

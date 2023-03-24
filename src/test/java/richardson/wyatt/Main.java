@@ -7,8 +7,8 @@ import java.io.FileNotFoundException;
 import org.joml.Math;
 import org.joml.Vector3f;
 
+import richardson.wyatt.application.Camera;
 import richardson.wyatt.application.Scene;
-import richardson.wyatt.game_entities.camera.Camera;
 import richardson.wyatt.game_entities.entity.Entity;
 import richardson.wyatt.game_entities.entity.EntityComponent;
 import richardson.wyatt.game_entities.entity.EntityController;
@@ -54,7 +54,7 @@ public class Main {
 //		
 		Entity lowPolyCharacter = new Entity("LowPolyCharacter");
 		Model lPCModel = new Model("LowPolyCharacter.dae", GL_TRIANGLES);
-		EntityComponent lPCTransform = new Transform(0, 0, 0, 0, 0, 0, 1f);
+		EntityComponent lPCTransform = new Transform(0, 0, -1, 0, 0, 0, 1);
 		EntityComponent lPCController = new EntityController() {
 
 			@Override
@@ -71,8 +71,8 @@ public class Main {
 		lowPolyCharacter.addComponent(lPCController);
 		testScene.addEntity(lowPolyCharacter);
 		
-
-		Entity sun = new Light("Sun", new Vector3f(1f,1f,1f));
+		Entity sun = new Entity("Sun");
+		EntityComponent sunLight = new Light(new Vector3f(.95f,.5f,.2f));
 		EntityComponent sunTransform = new Transform(0, 200, 0, 0, 0, 0, 1);
 		EntityComponent sunController = new EntityController() {
 
@@ -96,6 +96,7 @@ public class Main {
 
 			
 		};
+		sun.addComponent(sunLight);
 		sun.addComponent(sunTransform);
 		sun.addComponent(sunController);
 		testScene.addEntity(sun);
@@ -156,7 +157,7 @@ public class Main {
 		mainCam.addComponent(mainCamController);
 		((Camera) mainCam).setActive(true);
 		testScene.addEntity(mainCam);
-	
+		
 		
 		
 		

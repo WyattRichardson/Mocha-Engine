@@ -6,7 +6,8 @@ public abstract class EntityComponent{
 		MODEL, 
 		CONTROLLER,
 		TEXTURE,
-		ANIMATION
+		ANIMATION, 
+		LIGHT
 	};
 	private Type type = null;
 	public EntityComponent(Type type) {
