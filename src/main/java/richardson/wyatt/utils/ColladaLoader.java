@@ -166,18 +166,19 @@ public class ColladaLoader {
 	private static void arrangeData() { // fill raw arrays according to face data
 
 		vertices = new float[vertsArray.size() * 3];
-		for (int i = 0; i < vertsArray.size(); i++) { // fill raw vertices array
 
+
+		for (int i = 0; i < vertsArray.size(); i++) { // fill raw vertices array
+			
 			vertices[(i * 3)] = vertsArray.get(i).x;
 			vertices[(i * 3) + 1] = vertsArray.get(i).y;
 			vertices[(i * 3) + 2] = vertsArray.get(i).z;
-
+			
 		}
+		
 
 		texCoords = new float[vertsArray.size() * 2];
 		normals = new float[vertsArray.size() * 3];
-
-								
 		indices = new int[faces.size() * 3]; // allocate raw indices array 
 
 		for (int i = 0; i < faces.size(); i++) { // go through every vertex in every face and sort/fill accordingly
@@ -185,12 +186,12 @@ public class ColladaLoader {
 			String[] face = faces.get(i);
 
 			for (int z = 0; z < 3; z++) {
-
 				String[] currentVertex = face[z].split("/");
 				int currentIndex = Integer.parseInt(currentVertex[0]);
+				
 				indices[(i * 3) + z] = currentIndex; // passing currentIndex of every vertex in every face into raw
-														// indices array
 				Vector3f currentNormal = normsArray.get(Integer.parseInt(currentVertex[1]));
+			
 				Vector2f currentTexCoord = tCArray.get(Integer.parseInt(currentVertex[2]));
 
 				normals[(currentIndex * 3)] = currentNormal.x;
@@ -203,7 +204,6 @@ public class ColladaLoader {
 			}
 
 		}
-
 	}
 
 	private static void flushArrays() { // flush arrayLists

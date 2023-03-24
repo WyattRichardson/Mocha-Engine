@@ -40,6 +40,7 @@ public class Model extends EntityComponent{
 		int normsVBOID = glGenBuffers();
 		int tcVBOID = glGenBuffers();
 		int indVBOID = glGenBuffers();
+		int pFNVBOId = glGenBuffers();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indVBOID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, ColladaLoader.indices, GL_STATIC_DRAW);
 		this.indicyCount = ColladaLoader.indices.length;
@@ -55,6 +56,7 @@ public class Model extends EntityComponent{
 		glBindBuffer(GL_ARRAY_BUFFER, tcVBOID);
 		glBufferData(GL_ARRAY_BUFFER, ColladaLoader.texCoords, GL_STATIC_DRAW);
 		glVertexAttribPointer(2, 2, GL_FLOAT, false, 0, 0);
+		
 		
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);

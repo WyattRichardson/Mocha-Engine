@@ -4,20 +4,22 @@ in vec3 interpNormal;
 in vec3 toLightVectors[4];
 uniform vec3 lightColors[4];
 uniform sampler2D texture0;
-
 void main(){
 	vec3 totalDiffuse = vec3(0.0);
-	vec3 unitNormal = normalize(interpNormal);
 	float totalBrightness = 0.0;
-	vec2 texCoord = interpTexCoord / 20;
+	vec2 texCoord = interpTexCoord;
 	vec4 textureCol = texture(texture0, texCoord);
+	vec3 unitNorm = normalize(interpNormal);
+	textureCol = vec4(1, 0.1, 0.1, 1);
 	for(int i = 0; i < 4; i++){
-		float brightness = max(0.0, dot(normalize(toLightVectors[i]), unitNormal));
+		float brightness = max(0.1, dot(normalize(toLightVectors[i]), unitNorm));
 		totalBrightness += brightness / 4;
 		vec3 diffuse = brightness * (lightColors[i] * textureCol.xyz);
 		totalDiffuse += diffuse;
 	}
-	totalDiffuse = max(vec3(0.2,0.2,0.2), totalDiffuse);
-	totalBrightness = max(0.3, totalBrightness);
+	
+	totalBrightness = max(0.33, totalBrightness);
 	gl_FragColor = (textureCol + vec4(totalDiffuse, 1.0)) * totalBrightness;
+	
+	
 }
