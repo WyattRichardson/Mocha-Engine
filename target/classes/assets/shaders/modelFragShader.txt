@@ -14,12 +14,13 @@ void main(){
 	for(int i = 0; i < 4; i++){
 		float brightness = max(0.1, dot(normalize(toLightVectors[i]), unitNorm));
 		totalBrightness += brightness / 4;
+		
 		vec3 diffuse = brightness * (lightColors[i] * textureCol.xyz);
 		totalDiffuse += diffuse;
 	}
-	
-	totalBrightness = max(0.33, totalBrightness);
-	gl_FragColor = (textureCol + vec4(totalDiffuse, 1.0)) * totalBrightness;
+	vec4 ambient = textureCol / 2;
+	totalDiffuse = totalDiffuse * totalBrightness;
+	gl_FragColor = ambient + vec4(totalDiffuse, 1.0);
 	
 	
 }
