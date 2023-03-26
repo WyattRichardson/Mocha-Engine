@@ -11,6 +11,7 @@ richardson\wyatt\game_entities\textures\ModelTexture.class
 richardson\wyatt\game_entities\terrain\Terrain.class
 richardson\wyatt\game_entities\model\Model.class
 richardson\wyatt\rendering\shaders\ModelShader.class
+richardson\wyatt\application\Window$1.class
 richardson\wyatt\game_entities\entity\EntityComponent$Type.class
 richardson\wyatt\game_entities\textures\Texture.class
 richardson\wyatt\game_entities\camera\Camera.class
