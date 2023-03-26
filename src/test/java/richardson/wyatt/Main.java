@@ -7,6 +7,7 @@ import org.joml.Vector3f;
 
 import richardson.wyatt.application.Camera;
 import richardson.wyatt.application.Scene;
+import richardson.wyatt.application.Window;
 import richardson.wyatt.game_entities.entity.Entity;
 import richardson.wyatt.game_entities.entity.EntityComponent;
 import richardson.wyatt.game_entities.entity.EntityController;
@@ -21,14 +22,13 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Main {
 
-	public static final int WINDOW_WIDTH = 720;
-	public static final int WINDOW_HEIGHT = 380;
-	public static final String WINDOW_TITLE = "Java Game Engine";
-	public static final float[] CLEAR_COLOR = { 0.1f, 0.1f, 0.1f, 1 };
+	public static final int WINDOW_WIDTH = 1080;
+	public static final int WINDOW_HEIGHT = 720;
+	public static final float[] WINDOW_CLEAR_COLOR = { 0.1f, 0.1f, 0.1f, 1 };
 
 	public static void main(String[] args) {
-		
-		Scene testScene = new Scene(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, CLEAR_COLOR);
+		Window.init(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_CLEAR_COLOR);
+		Scene testScene = new Scene("Main_Scene");
 		
 //		
 //		Entity mando = new Entity("Mando");
@@ -48,7 +48,7 @@ public class Main {
 //		mando.addComponent(mandoController);
 //		testScene.addEntity(mando);
 //		
-		Entity lowPolyCharacter = new Entity("LowPolyCharacter");
+		Entity lowPolyCharacter = new Entity("Low_Poly_Character");
 		Model lPCModel = new Model("LowPolyCharacter.dae", GL_TRIANGLES);
 		EntityComponent lPCTransform = new Transform(0, 0, -1, 0, 0, 0, 1);
 		EntityComponent lPCController = new EntityController() {
@@ -163,11 +163,8 @@ public class Main {
 		mainCam.addComponent(mainCamController);
 		((Camera) mainCam).setActive(true);
 		testScene.addEntity(mainCam);
-		
-		
-		
-		
-		testScene.init(); 
-		
+
+		Window.setActiveScene(testScene);
+		Window.run();
 	}
 }

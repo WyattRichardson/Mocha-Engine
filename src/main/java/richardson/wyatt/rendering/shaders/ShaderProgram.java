@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
@@ -17,7 +18,7 @@ public abstract class ShaderProgram {
 	
 	public int getID(){
 		return programId;
-	};
+	}
 	
 	public int loadShader(String file, int type) {
 		StringBuilder shaderSource = new StringBuilder();

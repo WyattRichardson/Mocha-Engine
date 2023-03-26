@@ -1,7 +1,8 @@
 package richardson.wyatt.rendering.shaders;
 import static org.lwjgl.opengl.GL30.*;
 
-import richardson.wyatt.application.Scene;
+
+import richardson.wyatt.application.Window;
 import richardson.wyatt.utils.Math;
 public class ModelShader extends ShaderProgram {
 	
@@ -30,7 +31,7 @@ public class ModelShader extends ShaderProgram {
 	public void getUniformLocations() {
 		uniformLocations.put("projectionMatrix", glGetUniformLocation(this.programId, "projectionMatrix"));
 		float[] projectionMat = new float[16];
-		Math.createProjectionMatrix(Scene.currentVidMode).get(projectionMat);
+		Math.createProjectionMatrix(Window.currentVidMode).get(projectionMat);
 		glUniformMatrix4fv(uniformLocations.get("projectionMatrix"), false, projectionMat);
 		
 		uniformLocations.put("viewMatrix", glGetUniformLocation(this.programId, "viewMatrix"));
