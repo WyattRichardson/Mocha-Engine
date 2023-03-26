@@ -58,17 +58,17 @@ public final class Renderer {
 			if (entity.hasController()) {
 				EntityController controller = (EntityController) entity.getComponentByType(Type.CONTROLLER);
 				controller.tick(dt);
-				if(entity.hasLight()){//TEST THIS
-					Light light = (Light) entity.getComponentByType(Type.LIGHT);
-					int uniformIndex = light.getUniformIndex();
-					if(entity.hasTransform()){
-						Transform transform = (Transform) entity.getComponentByType(Type.TRANSFORM);
-						glUniform3f(modelShader.uniformLocations.get("lightPositions[" + uniformIndex + "]"), transform.getPosition().x, transform.getPosition().y, transform.getPosition().z);
-						glUniform3f(modelShader.uniformLocations.get("lightColors[" + uniformIndex + "]"), light.getColor().x, light.getColor().y, light.getColor().z);
-					}else{
-						System.err.println("ENTITY WITH LIGHT: " + entity.getId() + " HAS NO TRANSFORM!");
-						throw new IllegalStateException();
-					}
+			}
+			if(entity.hasLight()){//TEST THIS
+				Light light = (Light) entity.getComponentByType(Type.LIGHT);
+				int uniformIndex = light.getUniformIndex();
+				if(entity.hasTransform()){
+					Transform transform = (Transform) entity.getComponentByType(Type.TRANSFORM);
+					glUniform3f(modelShader.uniformLocations.get("lightPositions[" + uniformIndex + "]"), transform.getPosition().x, transform.getPosition().y, transform.getPosition().z);
+					glUniform3f(modelShader.uniformLocations.get("lightColors[" + uniformIndex + "]"), light.getColor().x, light.getColor().y, light.getColor().z);
+				}else{
+					System.err.println("ENTITY WITH LIGHT: " + entity.getId() + " HAS NO TRANSFORM!");
+					throw new IllegalStateException();
 				}
 			}
 		}
@@ -128,7 +128,23 @@ public final class Renderer {
 		
 
 	public boolean isInFOV(Vector3f position) {
-		return true; //me TODO: implent
+		Transform camTransform = (Transform) activeCam.getComponentByType(Type.TRANSFORM);
+		Vector3f toObjVec =  new Vector3f(position).sub(camTransform.getPosition()).normalize();
+		float camNormX = (float)org.joml.Math.sin(org.joml.Math.toRadians(camTransform.getRotation().y));
+		float camNormY = (float)org.joml.Math.sin(org.joml.Math.toRadians(-camTransform.getRotation().x));
+		float camNormZ = (float)org.joml.Math.cos(org.joml.Math.toRadians(camTransform.getRotation().y)) * -1;
+		Vector3f camNorm = new Vector3f(camNormX,camNormY,camNormZ);
+		float dotProd = camNorm.dot(toObjVec);
+		
+		if(dotProd < 0.75) {
+			return false;
+		} else {
+			return true;
+		}
+//		System.out.print(camNorm.x + "    ");
+//		System.out.print(camNorm.y + "    ");
+//		System.out.print(camNorm.z + "    ");
+//		System.out.println();
 	}
 
 	public void addEntity(Entity entity) {

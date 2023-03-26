@@ -2,8 +2,6 @@ package richardson.wyatt;
 
 import static org.lwjgl.opengl.GL30.*;
 
-import java.io.FileNotFoundException;
-
 import org.joml.Math;
 import org.joml.Vector3f;
 
@@ -13,11 +11,9 @@ import richardson.wyatt.game_entities.entity.Entity;
 import richardson.wyatt.game_entities.entity.EntityComponent;
 import richardson.wyatt.game_entities.entity.EntityController;
 import richardson.wyatt.game_entities.entity.Transform;
-import richardson.wyatt.game_entities.entity.EntityComponent.Type;
 import richardson.wyatt.game_entities.lighting.Light;
 import richardson.wyatt.game_entities.model.Model;
 import richardson.wyatt.game_entities.textures.ModelTexture;
-import richardson.wyatt.utils.ColladaLoader;
 import richardson.wyatt.utils.KeyInput;
 import richardson.wyatt.utils.MouseInput;
 
@@ -25,10 +21,10 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Main {
 
-	public static final int WINDOW_WIDTH = 1920;
-	public static final int WINDOW_HEIGHT = 1080;
+	public static final int WINDOW_WIDTH = 720;
+	public static final int WINDOW_HEIGHT = 380;
 	public static final String WINDOW_TITLE = "Java Game Engine";
-	public static final float[] CLEAR_COLOR = { 0.3f, 0.3f, 0.3f, 1 };
+	public static final float[] CLEAR_COLOR = { 0.1f, 0.1f, 0.1f, 1 };
 
 	public static void main(String[] args) {
 		
@@ -73,13 +69,19 @@ public class Main {
 		
 		Entity sun = new Entity("Sun");
 		EntityComponent sunLight = new Light(new Vector3f(.95f,.5f,.2f));
-		EntityComponent sunTransform = new Transform(0, 200, 0, 0, 0, 0, 1);
-		EntityComponent sunController = new EntityController() {
-
+		EntityComponent sunTransform = new Transform(0, 1000, 0, 0, 0, 0, 1);
+		sun.addComponent(sunLight);
+		sun.addComponent(sunTransform);
+		testScene.addEntity(sun);
+		
+		Entity spotLight1 = new Entity("Spot_Light_1");
+		EntityComponent spotLight = new Light(new Vector3f(1, 1, 1));
+		EntityComponent spotLight1Transform = new Transform(20, 20, 1, 0, 0, 0, 1);
+		EntityComponent spotLight1Controller = new EntityController() {
 			@Override
 			public void tick(float dt) {
-				Transform transform = (Transform) sunTransform;
-				float speed = 1000;
+				Transform transform = (Transform) spotLight1Transform;
+				float speed = 10;
 				if(KeyInput.isKeyDown(GLFW_KEY_LEFT)){
 					transform.getPosition().x -= (speed * dt);
 				}
@@ -93,13 +95,12 @@ public class Main {
 					transform.getPosition().y -= (speed * dt);
 				}
 			}
-
-			
 		};
-		sun.addComponent(sunLight);
-		sun.addComponent(sunTransform);
-		sun.addComponent(sunController);
-		testScene.addEntity(sun);
+		spotLight1.addComponent(spotLight1Transform);
+		spotLight1.addComponent(spotLight);
+		spotLight1.addComponent(spotLight1Controller);
+		testScene.addEntity(spotLight1);
+		
 
 		
 		Entity mainCam = new Camera("MainCamera");
@@ -113,6 +114,11 @@ public class Main {
 				Transform transform = (Transform) mainCamTransform;
 				transform.getRotation().y += MouseInput.deltaX * turnSpeed * dt;
 				transform.getRotation().x += MouseInput.deltaY * turnSpeed * dt;
+				if(transform.getRotation().x > 45) {
+					transform.getRotation().x = 45;
+				}else if(transform.getRotation().x < -45) {
+					transform.getRotation().x = -45;
+				}
 				
 				if(KeyInput.isKeyDown(GLFW_KEY_A)){
 					speed = BASE_SPEED;
