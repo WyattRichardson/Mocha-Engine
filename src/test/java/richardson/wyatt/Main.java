@@ -75,13 +75,13 @@ public class Main {
 		testScene.addEntity(sun);
 		
 		Entity spotLight1 = new Entity("Spot_Light_1");
-		EntityComponent spotLight = new Light(new Vector3f(1, 1, 1));
-		EntityComponent spotLight1Transform = new Transform(20, 20, 1, 0, 0, 0, 1);
+		EntityComponent spotLight = new Light(new Vector3f(0.3f, 0.3f, 0.3f));
+		EntityComponent spotLight1Transform = new Transform(-10, 3, 10, 0, 0, 0, 1);
 		EntityComponent spotLight1Controller = new EntityController() {
 			@Override
 			public void tick(float dt) {
 				Transform transform = (Transform) spotLight1Transform;
-				float speed = 10;
+				float speed = 5;
 				if(KeyInput.isKeyDown(GLFW_KEY_LEFT)){
 					transform.getPosition().x -= (speed * dt);
 				}
