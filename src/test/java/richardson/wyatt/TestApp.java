@@ -103,7 +103,7 @@ public class TestApp {
 		
 
 		
-		Entity mainCam = new Camera("MainCamera");
+		Camera mainCam = new Camera("MainCamera");
 		EntityComponent mainCamTransform = new Transform(0, 0, 10, 0, 0, 0, 1);
 		EntityComponent mainCamController = new EntityController() {
 			public static final int BASE_SPEED = 10;
@@ -161,9 +161,11 @@ public class TestApp {
 		};
 		mainCam.addComponent(mainCamTransform);
 		mainCam.addComponent(mainCamController);
-		((Camera) mainCam).setActive(true);
 		testScene.addEntity(mainCam);
-
+		testScene.setActiveCamera(mainCam);
+		
+		
+		
 		Window.setActiveScene(testScene);
 		Window.run();
 	}

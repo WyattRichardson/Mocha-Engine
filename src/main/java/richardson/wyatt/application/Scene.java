@@ -1,36 +1,33 @@
 package richardson.wyatt.application;
 
 import static org.lwjgl.glfw.GLFW.*;
-
+import static org.lwjgl.opengl.GL20.glDeleteProgram;
 import static org.lwjgl.opengl.GL30.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.opengl.GL;
-import org.lwjgl.openvr.VREventEditingCameraSurface;
-
 import richardson.wyatt.game_entities.entity.Entity;
-import richardson.wyatt.rendering.*;
-import richardson.wyatt.utils.KeyInput;
-import richardson.wyatt.utils.MouseInput;
+import richardson.wyatt.game_entities.entity.EntityComponent.Type;
+import richardson.wyatt.game_entities.model.Model;
 
-import static org.lwjgl.glfw.Callbacks.*;
 
 public final class Scene { 
-	public Renderer renderer;
 	public Camera activeCamera;
 
+	private HashMap<Model, ArrayList<Entity>> entitiesWithModels;
+	private ArrayList<Entity> entitiesWithoutModels;
+	
 	private List<Camera> cameras;
 	private String id;
 	
 	public Scene(String id) { 
 		this.id = id;
 		Window.addScene(this);
-		renderer = new Renderer();
 		cameras = new ArrayList<Camera>();
+		entitiesWithModels = new HashMap<>();
+		entitiesWithoutModels = new ArrayList<>();
 	}
 	
 	public void init() {
@@ -39,33 +36,42 @@ public final class Scene {
 		glEnable(GL_DEPTH_TEST);
 	}
 	
-	public void loop(float dt) {
-		
-		switchCamera();
-		renderer.render(dt, activeCamera);
-	}
 	
-	private void switchCamera() {
-		for(Camera c: cameras) {
-			if(c.isActive()) {
-				activeCamera = c;
-				return;
-			}
+	public void setActiveCamera(Camera c) {
+		if(cameras.indexOf(c) != -1) {
+			activeCamera = c;
+		}else {
+			throw new IllegalStateException("Camera passed to be set active is not in scene: " + id);
 		}
-		System.err.println("NO ACTIVE CAMERA!");
-		throw new IllegalStateException();
 	}
 	
+	public ArrayList<Entity> getEntitiesWithoutModels(){
+		return this.entitiesWithoutModels;
+	}
+	public HashMap<Model, ArrayList<Entity>> getEntitiesWithModels(){
+		return this.entitiesWithModels;
+	}
 	
 	public void addEntity(Entity entity) {
 		if(entity.getClass().getSimpleName().equals("Camera")) {
 			cameras.add((Camera)entity);
 		}else {
-			renderer.addEntity(entity);
+			if(entity.hasModel()){
+				Model model = (Model) entity.getComponentsByType(Type.MODEL).get(0);
+				if(!entitiesWithModels.containsKey(model)){
+					entitiesWithModels.put(model, new ArrayList<Entity>());
+				}
+				entitiesWithModels.get(model).add(entity);
+			}else {
+				entitiesWithoutModels.add(entity);
+
+			}
 		}
 	}
 	public void cleanUp() {
-		renderer.cleanUp();
+		for(Model m: entitiesWithModels.keySet()) {
+			m.cleanUp();
+		}
 	}
 	
 	

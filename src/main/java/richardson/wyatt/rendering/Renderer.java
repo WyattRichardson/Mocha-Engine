@@ -7,6 +7,7 @@ import java.util.Map;
 import org.joml.Vector3f;
 
 import richardson.wyatt.application.Camera;
+import richardson.wyatt.application.Scene;
 import richardson.wyatt.game_entities.entity.Entity;
 import richardson.wyatt.game_entities.entity.EntityController;
 import richardson.wyatt.game_entities.entity.Transform;
@@ -17,27 +18,32 @@ import richardson.wyatt.game_entities.textures.ModelTexture;
 import richardson.wyatt.rendering.shaders.ModelShader;
 import richardson.wyatt.utils.Math;
 
+import static org.lwjgl.opengl.GL20.glDeleteProgram;
 import static org.lwjgl.opengl.GL30.*;
 
 public final class Renderer {
 
-	public Map<Model, ArrayList<Entity>> entities_with_models;
-	public List<Entity> entities_without_models;
+	public Map<Model, ArrayList<Entity>> entitiesWithModels;
+	public List<Entity> entitiesWithoutModels;
 
 	private ModelShader modelShader;
 	private Camera activeCam;
+	private Scene scene;
 
 	public Renderer() {
 		
-		entities_with_models = new HashMap<Model, ArrayList<Entity>>(); 
-		entities_without_models = new ArrayList<Entity>();
+		entitiesWithModels = new HashMap<Model, ArrayList<Entity>>(); 
+		entitiesWithoutModels = new ArrayList<Entity>();
 		modelShader = new ModelShader("src/main/resources/assets/shaders/modelVertShader.txt",
 		"src/main/resources/assets/shaders/modelFragShader.txt");
 		
 	}
 
-	public void render(float dt, Camera activeCam) {
-		this.activeCam = activeCam;
+	public void render(float dt, Scene scene) {
+		this.scene = scene;
+		this.entitiesWithModels = scene.getEntitiesWithModels();
+		this.entitiesWithoutModels = scene.getEntitiesWithoutModels();
+		this.activeCam = scene.activeCamera;
 		
 		glUseProgram(modelShader.getID());
 		
@@ -54,7 +60,7 @@ public final class Renderer {
 	}
 
 	public void tickEntitiesWithoutModels(float dt) {
-		for (Entity entity : entities_without_models) {
+		for (Entity entity : entitiesWithoutModels) {
 			if (entity.hasController()) {
 				EntityController controller = (EntityController) entity.getComponentByType(Type.CONTROLLER);
 				controller.tick(dt);
@@ -75,7 +81,7 @@ public final class Renderer {
 	}
 
 	public void renderEntitiesWithModels(float dt) throws NullPointerException{
-		for (Model model : entities_with_models.keySet()) {
+		for (Model model : entitiesWithModels.keySet()) {
 
 			int vaoID = model.getVAO();
 
@@ -90,7 +96,7 @@ public final class Renderer {
 				glActiveTexture(texture.getUnit());
 				texture.bind();
 			}
-			List<Entity> batch = entities_with_models.get(model);
+			List<Entity> batch = entitiesWithModels.get(model);
 			
 			for (Entity entity: batch) {
 				if(!entity.hasTransform()){
@@ -147,24 +153,10 @@ public final class Renderer {
 //		System.out.println();
 	}
 
-	public void addEntity(Entity entity) {
-		if(entity.hasModel()){
-			Model model = (Model) entity.getComponentsByType(Type.MODEL).get(0);
-			if(!entities_with_models.containsKey(model)){
-				entities_with_models.put(model, new ArrayList<Entity>());
-			}
-			entities_with_models.get(model).add(entity);
-		}else {
-			entities_without_models.add(entity);
-
-		}
-	}
 
 	public void cleanUp() {
 		glDeleteProgram(modelShader.getID());
-		for(Model m: entities_with_models.keySet()) {
-			m.cleanUp();
-		}
+
 	}
 
 }

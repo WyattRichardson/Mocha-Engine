@@ -17,6 +17,7 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
 
+import richardson.wyatt.rendering.Renderer;
 import richardson.wyatt.utils.KeyInput;
 import richardson.wyatt.utils.MouseInput;
 
@@ -30,7 +31,8 @@ public final class Window {
 	private static Scene activeScene;
 	private static List<Scene> scenes = new ArrayList<>();
 	private static int frames = 0;
-
+	private static Renderer renderer;
+	
 	private Window() {}
 	
 	public static void init(int width, int height, float[] clearColor) {
@@ -47,6 +49,7 @@ public final class Window {
 		currentVidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 		GL.createCapabilities();
 		glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
+		renderer = new Renderer();
 	}
 	
 	public static void run() {
@@ -79,7 +82,7 @@ public final class Window {
 			MouseInput.checkForStillMouse();
 			actualDt = (float)(System.currentTimeMillis() - lastTime); 
 			actualDt = actualDt / 1000; //Delta time in seconds.
-			activeScene.loop(actualDt);
+			renderer.render(actualDt, activeScene);
 			glfwSwapBuffers(id);
 			lastTime = System.currentTimeMillis();
 			int expectedDt = (int)(1000/MAX_FPS);
