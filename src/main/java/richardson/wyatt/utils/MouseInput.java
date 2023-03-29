@@ -1,32 +1,55 @@
 package richardson.wyatt.utils;
 
 import org.lwjgl.glfw.GLFWCursorPosCallback;
+import static org.lwjgl.glfw.GLFW.*;
+
+import java.nio.DoubleBuffer;
+
+import richardson.wyatt.application.Window;
 
 public class MouseInput extends GLFWCursorPosCallback{
 	
-	public static float deltaX = 0;
-	public static float deltaY = 0;
+	public static Window window;
+	public static int deltaX = 0;
+	public static int deltaY = 0;
+	private static boolean frameInvoked = false;
+	private static int lastDX = 0;
+	private static int lastDY = 0;
+	private static int lastXPos = 0;
+	private static int lastYPos = 0; 
 	
-	private static float lastDX = 0;
-	private static float lastDY = 0;
-	private static float lastXPos = 0;
-	private static float lastYPos = 0;
+	public MouseInput() {
+//		DoubleBuffer xBuffer = DoubleBuffer.allocate(1);
+//		glfwGetCursorPos(Window.id, xBuffer, null);
+//		int xPos = (int) xBuffer.get();
+//		System.out.println(xPos);
+	}
+
 	@Override
 	public void invoke(long window, double xpos, double ypos) {
-		deltaX = (float) xpos - lastXPos;
-		deltaY = (float) ypos - lastYPos;
-		lastXPos = (float) xpos;
-		lastYPos = (float) ypos;
+		deltaX = (int)xpos - lastXPos;
+		deltaY = (int)ypos - lastYPos;
+		//deltaX += (deltaX - lastDX);
+		//deltaY += (deltaY - lastDY);
+		
+		lastXPos = (int)xpos;
+		lastYPos = (int)ypos;
+		lastDX = deltaX;
+		lastDY = deltaY;
+		frameInvoked = true;
 		
 	}
 	
 	public static void checkForStillMouse() {
-		if(lastDX == deltaX && lastDY == deltaY) {
+		if(frameInvoked == false) {
 			deltaX = 0;
 			deltaY = 0;
+
 		}
-		lastDX = deltaX;
-		lastDY = deltaY;
+		
 	}
 	
+	public static void setFrameInvoked(boolean b) {
+		frameInvoked = b;
+	}
 }

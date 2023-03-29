@@ -20,7 +20,7 @@ import richardson.wyatt.utils.MouseInput;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class Main {
+public class TestApp {
 
 	public static final int WINDOW_WIDTH = 1080;
 	public static final int WINDOW_HEIGHT = 720;
@@ -30,24 +30,24 @@ public class Main {
 		Window.init(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_CLEAR_COLOR);
 		Scene testScene = new Scene("Main_Scene");
 		
-//		
-//		Entity mando = new Entity("Mando");
-//		Model mandoModel = new Model("Mandalorian.obj", GL_TRIANGLES);
-//		EntityComponent mandoTransform = new Transform(0, 0, -10, 0, 0, 0, 0.2f);
-//		EntityComponent mandoController = new EntityController() {
-//
-//			@Override
-//			public void tick(float dt) {
-//			}
-//			
-//		};
-//		ModelTexture mandoTex = new ModelTexture("metal.png", GL_TEXTURE0);
-//		mandoModel.setTexture(mandoTex);
-//		mando.addComponent(mandoModel);
-//		mando.addComponent(mandoTransform);
-//		mando.addComponent(mandoController);
-//		testScene.addEntity(mando);
-//		
+		
+		Entity mando = new Entity("Mando");
+		Model mandoModel = new Model("Mandalorian.obj", GL_TRIANGLES);
+		EntityComponent mandoTransform = new Transform(0, 0, -10, 0, 0, 0, 0.2f);
+		EntityComponent mandoController = new EntityController() {
+
+			@Override
+			public void tick(float dt) {
+			}
+			
+		};
+		ModelTexture mandoTex = new ModelTexture("metal.png", GL_TEXTURE0);
+		mandoModel.setTexture(mandoTex);
+		mando.addComponent(mandoModel);
+		mando.addComponent(mandoTransform);
+		mando.addComponent(mandoController);
+		testScene.addEntity(mando);
+	
 		Entity lowPolyCharacter = new Entity("Low_Poly_Character");
 		Model lPCModel = new Model("LowPolyCharacter.dae", GL_TRIANGLES);
 		EntityComponent lPCTransform = new Transform(0, 0, -1, 0, 0, 0, 1);
@@ -60,7 +60,6 @@ public class Main {
 			}
 			
 		};
-		ModelTexture mandoTex = new ModelTexture("metal.png", GL_TEXTURE0);
 		//lPCModel.setTexture(mandoTex);
 		lowPolyCharacter.addComponent(lPCModel);
 		lowPolyCharacter.addComponent(lPCTransform);
@@ -75,7 +74,7 @@ public class Main {
 		testScene.addEntity(sun);
 		
 		Entity spotLight1 = new Entity("Spot_Light_1");
-		EntityComponent spotLight = new Light(new Vector3f(1, 1, 1));
+		EntityComponent spotLight = new Light(new Vector3f(0.2f, 0.2f, 0.2f));
 		EntityComponent spotLight1Transform = new Transform(20, 20, 1, 0, 0, 0, 1);
 		EntityComponent spotLight1Controller = new EntityController() {
 			@Override

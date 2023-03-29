@@ -57,7 +57,7 @@ public final class Window {
 	private static void loop() {
 		
 		long lastTime = System.currentTimeMillis();
-		float actualDt = System.currentTimeMillis() - lastTime;
+		float actualDt = 0;
 		
 		Timer fpsCounter = new Timer();
 		fpsCounter.scheduleAtFixedRate(new TimerTask() {
@@ -74,9 +74,11 @@ public final class Window {
 				glfwSetWindowShouldClose(id, true);
 			}
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			MouseInput.setFrameInvoked(false);
 			glfwPollEvents();
 			MouseInput.checkForStillMouse();
-			actualDt = ((float)(System.currentTimeMillis() - lastTime)) / 1000; //Delta time in seconds.
+			actualDt = (float)(System.currentTimeMillis() - lastTime); 
+			actualDt = actualDt / 1000; //Delta time in seconds.
 			activeScene.loop(actualDt);
 			glfwSwapBuffers(id);
 			lastTime = System.currentTimeMillis();
