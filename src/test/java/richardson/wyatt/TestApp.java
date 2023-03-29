@@ -74,13 +74,8 @@ public class TestApp {
 		testScene.addEntity(sun);
 		
 		Entity spotLight1 = new Entity("Spot_Light_1");
-<<<<<<< HEAD:src/test/java/richardson/wyatt/TestApp.java
-		EntityComponent spotLight = new Light(new Vector3f(0.2f, 0.2f, 0.2f));
-		EntityComponent spotLight1Transform = new Transform(20, 20, 1, 0, 0, 0, 1);
-=======
 		EntityComponent spotLight = new Light(new Vector3f(0.3f, 0.3f, 0.3f));
 		EntityComponent spotLight1Transform = new Transform(-10, 3, 10, 0, 0, 0, 1);
->>>>>>> 1bb28bb15db43743a5c702130182fa25442e5203:src/test/java/richardson/wyatt/Main.java
 		EntityComponent spotLight1Controller = new EntityController() {
 			@Override
 			public void tick(float dt) {
