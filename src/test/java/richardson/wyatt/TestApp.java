@@ -20,7 +20,7 @@ import richardson.wyatt.utils.MouseInput;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class Main {
+public class TestApp {
 
 	public static final int WINDOW_WIDTH = 1080;
 	public static final int WINDOW_HEIGHT = 720;
@@ -47,6 +47,7 @@ public class Main {
 		mando.addComponent(mandoTransform);
 		mando.addComponent(mandoController);
 		testScene.addEntity(mando);
+
 		
 		Entity lowPolyCharacter = new Entity("Low_Poly_Character");
 		Model lPCModel = new Model("LowPolyCharacter.dae", GL_TRIANGLES);
@@ -60,6 +61,7 @@ public class Main {
 			}
 			
 		};
+
 		lowPolyCharacter.addComponent(lPCModel);
 		lowPolyCharacter.addComponent(lPCTransform);
 		lowPolyCharacter.addComponent(lPCController);
