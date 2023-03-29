@@ -8,11 +8,15 @@ uniform sampler2D texture0;
 void main(){
 	vec4 totalAmbient = vec4(0);
 	vec4 totalDiffuse = vec4(0);
-	vec2 texCoord = interpTexCoord;
+	vec2 texCoord = interpTexCoord / 20;
 	vec3 unitNorm = normalize(interpNormal);
-	vec4 textureCol = texture(texture0, texCoord);
+	vec4 textureCol;
 
-	textureCol = vec4(1,0,0,1); // TEMP
+	if(textureSize(texture0, 0).x > 1){
+		textureCol = texture(texture0, texCoord);
+	}else{
+		textureCol = vec4(.7,0,0,1);
+	}
 	
 	for(int i = 0; i < 4; i++){
 		float brightness = max(0.25, dot(normalize(toLightVectors[i]), unitNorm));

@@ -30,24 +30,24 @@ public class Main {
 		Window.init(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_CLEAR_COLOR);
 		Scene testScene = new Scene("Main_Scene");
 		
-//		
-//		Entity mando = new Entity("Mando");
-//		Model mandoModel = new Model("Mandalorian.obj", GL_TRIANGLES);
-//		EntityComponent mandoTransform = new Transform(0, 0, -10, 0, 0, 0, 0.2f);
-//		EntityComponent mandoController = new EntityController() {
-//
-//			@Override
-//			public void tick(float dt) {
-//			}
-//			
-//		};
-//		ModelTexture mandoTex = new ModelTexture("metal.png", GL_TEXTURE0);
-//		mandoModel.setTexture(mandoTex);
-//		mando.addComponent(mandoModel);
-//		mando.addComponent(mandoTransform);
-//		mando.addComponent(mandoController);
-//		testScene.addEntity(mando);
-//		
+		
+		Entity mando = new Entity("Mando");
+		Model mandoModel = new Model("Mandalorian.obj", GL_TRIANGLES);
+		EntityComponent mandoTransform = new Transform(0, 0, -10, 0, 0, 0, 0.2f);
+		EntityComponent mandoController = new EntityController() {
+
+			@Override
+			public void tick(float dt) {
+			}
+			
+		};
+		ModelTexture mandoTex = new ModelTexture("metal.png", GL_TEXTURE0);
+		mandoModel.setTexture(mandoTex);
+		mando.addComponent(mandoModel);
+		mando.addComponent(mandoTransform);
+		mando.addComponent(mandoController);
+		testScene.addEntity(mando);
+		
 		Entity lowPolyCharacter = new Entity("Low_Poly_Character");
 		Model lPCModel = new Model("LowPolyCharacter.dae", GL_TRIANGLES);
 		EntityComponent lPCTransform = new Transform(0, 0, -1, 0, 0, 0, 1);
@@ -60,8 +60,6 @@ public class Main {
 			}
 			
 		};
-		ModelTexture mandoTex = new ModelTexture("metal.png", GL_TEXTURE0);
-		//lPCModel.setTexture(mandoTex);
 		lowPolyCharacter.addComponent(lPCModel);
 		lowPolyCharacter.addComponent(lPCTransform);
 		lowPolyCharacter.addComponent(lPCController);
@@ -81,7 +79,7 @@ public class Main {
 			@Override
 			public void tick(float dt) {
 				Transform transform = (Transform) spotLight1Transform;
-				float speed = 5;
+				float speed = 50;
 				if(KeyInput.isKeyDown(GLFW_KEY_LEFT)){
 					transform.getPosition().x -= (speed * dt);
 				}
