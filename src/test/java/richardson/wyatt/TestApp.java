@@ -22,8 +22,8 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class TestApp {
 
-	public static final int WINDOW_WIDTH = 1080;
-	public static final int WINDOW_HEIGHT = 720;
+	public static final int WINDOW_WIDTH = 1920;
+	public static final int WINDOW_HEIGHT = 1080;
 	public static final float[] WINDOW_CLEAR_COLOR = {0f, .25f, 1f, 1 };
 
 	public static void main(String[] args) {

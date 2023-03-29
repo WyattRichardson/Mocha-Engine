@@ -18,6 +18,11 @@ import richardson.wyatt.game_entities.textures.ModelTexture;
 import richardson.wyatt.rendering.shaders.ModelShader;
 import richardson.wyatt.utils.Math;
 
+import static org.lwjgl.opengl.GL11.GL_BACK;
+import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.glCullFace;
+import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL20.glDeleteProgram;
 import static org.lwjgl.opengl.GL30.*;
 
@@ -44,17 +49,16 @@ public final class Renderer {
 		this.entitiesWithModels = scene.getEntitiesWithModels();
 		this.entitiesWithoutModels = scene.getEntitiesWithoutModels();
 		this.activeCam = scene.activeCamera;
-		
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		glEnable(GL_DEPTH_TEST);
 		glUseProgram(modelShader.getID());
-		
 		if(activeCam.hasController()) {
 			EntityController camController = (EntityController) activeCam.getComponentByType(Type.CONTROLLER);
 			camController.tick(dt);
 		}
-		
 		tickEntitiesWithoutModels(dt);
 		renderEntitiesWithModels(dt);
-		
 		glUseProgram(0);
 
 	}

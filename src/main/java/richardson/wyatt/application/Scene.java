@@ -30,13 +30,6 @@ public final class Scene {
 		entitiesWithoutModels = new ArrayList<>();
 	}
 	
-	public void init() {
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-		glEnable(GL_DEPTH_TEST);
-	}
-	
-	
 	public void setActiveCamera(Camera c) {
 		if(cameras.indexOf(c) != -1) {
 			activeCamera = c;

@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -16,6 +17,7 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
+import org.lwjgl.system.MemoryStack;
 
 import richardson.wyatt.rendering.Renderer;
 import richardson.wyatt.utils.KeyInput;
@@ -47,6 +49,23 @@ public final class Window {
 		glfwSetCursorPosCallback(id, new MouseInput());
 		glfwSetInputMode(id, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		currentVidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		try ( MemoryStack stack = MemoryStack.stackPush()) {
+			IntBuffer pWidth = stack.mallocInt(1); // int*
+			IntBuffer pHeight = stack.mallocInt(1); // int*
+
+			// Get the window size passed to glfwCreateWindow
+			glfwGetWindowSize(id, pWidth, pHeight);
+
+			// Get the resolution of the primary monitor
+			GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+			// Center the window
+			glfwSetWindowPos(
+				id,
+				(vidmode.width() - pWidth.get(0)) / 2,
+				(vidmode.height() - pHeight.get(0)) / 2
+			);
+		}
 		GL.createCapabilities();
 		glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
 		renderer = new Renderer();
@@ -103,7 +122,6 @@ public final class Window {
 	}
 	public static void setActiveScene(Scene scene) {
 		activeScene = scenes.get(scenes.indexOf(scene));
-		activeScene.init();
 	}
 	
 	private static void cleanUp() {
