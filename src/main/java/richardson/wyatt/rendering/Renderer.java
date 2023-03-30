@@ -16,6 +16,7 @@ import richardson.wyatt.game_entities.entity.Transform;
 import richardson.wyatt.game_entities.entity.EntityComponent.Type;
 import richardson.wyatt.game_entities.lighting.Light;
 import richardson.wyatt.game_entities.model.Model;
+import richardson.wyatt.game_entities.terrain.Terrain;
 import richardson.wyatt.game_entities.textures.ModelTexture;
 import richardson.wyatt.rendering.shaders.ModelShader;
 import richardson.wyatt.utils.Math;
@@ -59,13 +60,43 @@ public final class Renderer {
 			EntityController camController = (EntityController) activeCam.getComponentByType(Type.CONTROLLER);
 			camController.tick(dt);
 		}
+		if(scene.hasTerrains()) {
+			renderTerrains();
+		}
 		tickEntitiesWithoutModels(dt);
 		renderEntitiesWithModels(dt);
 		glUseProgram(0);
 
 	}
 
-	public void tickEntitiesWithoutModels(float dt) {
+	private void renderTerrains() {
+		for(Terrain t: scene.getTerrains()) {
+			Model model = (Model) t.getComponentByType(Type.MODEL);
+			int vaoID = model.getVAO();
+			glBindVertexArray(vaoID);
+			glEnableVertexAttribArray(0);
+			glEnableVertexAttribArray(1);
+			glEnableVertexAttribArray(2);
+			if(model.hasTexture()){
+				ModelTexture texture = model.getTexture();
+				glActiveTexture(texture.getUnit());
+				texture.bind();
+			}
+			if(t.hasTransform()) {
+				Transform transform = (Transform) t.getComponentByType(Type.TRANSFORM);	
+				float[] modelTransformMat = new float[16];
+				Math.createTransformationMatrix(transform.getPosition(), transform.getRotation(), transform.getScale()).get(modelTransformMat);
+				glUniformMatrix4fv(modelShader.uniformLocations.get("transformationMatrix"), false, modelTransformMat);
+
+			}
+			float[] viewMatrix = new float[16];
+			Math.createViewMatrix((Transform) activeCam.getComponentByType(Type.TRANSFORM)).get(viewMatrix);
+			glUniformMatrix4fv(modelShader.uniformLocations.get("viewMatrix"), false, viewMatrix);
+			glDrawElements(model.getFaceType(), model.getIndicyCount(), GL_UNSIGNED_INT, 0);
+		}
+
+	}
+	private void tickEntitiesWithoutModels(float dt) {
 		for (Entity entity : entitiesWithoutModels) {
 			if (entity.hasController()) {
 				EntityController controller = (EntityController) entity.getComponentByType(Type.CONTROLLER);
@@ -86,7 +117,7 @@ public final class Renderer {
 		}
 	}
 
-	public void renderEntitiesWithModels(float dt) throws NullPointerException{
+	private void renderEntitiesWithModels(float dt) throws NullPointerException{
 		for (Model model : entitiesWithModels.keySet()) {
 
 			int vaoID = model.getVAO();

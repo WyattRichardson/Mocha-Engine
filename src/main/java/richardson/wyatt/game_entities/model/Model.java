@@ -3,6 +3,8 @@ import static org.lwjgl.opengl.GL30.*;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+import org.joml.Vector3f;
+
 import richardson.wyatt.game_entities.entity.EntityComponent;
 import richardson.wyatt.game_entities.textures.ModelTexture;
 import richardson.wyatt.utils.ColladaLoader;
@@ -176,7 +178,7 @@ public class Model extends EntityComponent{
 		for(int row = 0; row < width; row++) { // Generate vertex data.
 			for(int col = 0; col < width; col++) {
 				float x = offset * col * -1;
-				float y = 0;
+				float y = (float)Math.random() / 2;
 				float z = offset * row * -1;
 				int index = (row * width) + col;
 				vertices[index * 3] = x;
@@ -184,14 +186,44 @@ public class Model extends EntityComponent{
 				vertices[index * 3 + 2] = z;
 			}
 		}
-		for(float f: vertices) {
-			System.out.println(f);
-		}
 		glBindBuffer(GL_ARRAY_BUFFER, vertsVBOID);
 		glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
 		glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 		
 		float[] normals = new float[vertexCount*3];
+		for(int row = 0; row < width; row++) {
+			for(int col = 0; col < width; col++) {
+				float heightL;
+				float heightR;
+				float heightU;
+				float heightD;
+				int index = ((row * width) + col) * 3;//Of current vector x value.
+				if(col==width-1) {
+					heightL = 0;
+				}else {
+					heightL = vertices[index + 4];
+				}
+				if(col==0) {
+					heightR = 0;
+				}else {
+					heightR = vertices[index - 2];
+				}
+				if(row==width-1) {
+					heightU = 0;
+				}else {
+					heightU = vertices[index + (width*3) + 1];
+				}
+				if(row==0) {
+					heightD = 0;
+				}
+				else {
+					heightD = vertices[index - (width*3) + 1];
+				}
+				normals[index] = heightL - heightR;
+				normals[index+1] = 2;
+				normals[index+2] = heightD - heightU;
+			} 
+		}
 		glBindBuffer(GL_ARRAY_BUFFER, normsVBOID);
 		glBufferData(GL_ARRAY_BUFFER, normals, GL_STATIC_DRAW);
 		glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0); //TODO: change normalized bool for fun to see what happens to lighting
@@ -209,5 +241,6 @@ public class Model extends EntityComponent{
 		model.setIndicyCount(indices.length);
 		return model;
 	}
+	
 
 }

@@ -1,8 +1,5 @@
 package richardson.wyatt.utils;
 
-import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;

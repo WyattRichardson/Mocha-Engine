@@ -8,7 +8,7 @@ import org.lwjgl.glfw.GLFWVidMode;
 import richardson.wyatt.game_entities.entity.Transform;
 
 public final class Math {
-	private static final float FOV = 70;
+	private static final float FOV = 90;
 	private static final float NEAR_PLANE = 0.1f;
 	private static final float FAR_PLANE = 1000;
 	

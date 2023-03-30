@@ -11,6 +11,7 @@ import java.util.List;
 import richardson.wyatt.game_entities.entity.Entity;
 import richardson.wyatt.game_entities.entity.EntityComponent.Type;
 import richardson.wyatt.game_entities.model.Model;
+import richardson.wyatt.game_entities.terrain.Terrain;
 
 
 public final class Scene { 
@@ -19,8 +20,10 @@ public final class Scene {
 	private HashMap<Model, ArrayList<Entity>> entitiesWithModels;
 	private ArrayList<Entity> entitiesWithoutModels;
 	
-	private List<Camera> cameras;
+	private ArrayList<Terrain> terrains;
+	private ArrayList<Camera> cameras;
 	private String id;
+	private boolean hasTerrains = false;
 	
 	public Scene(String id) { 
 		this.id = id;
@@ -28,6 +31,7 @@ public final class Scene {
 		cameras = new ArrayList<Camera>();
 		entitiesWithModels = new HashMap<>();
 		entitiesWithoutModels = new ArrayList<>();
+		terrains = new ArrayList<Terrain>();
 	}
 	
 	public void setActiveCamera(Camera c) {
@@ -44,10 +48,16 @@ public final class Scene {
 	public HashMap<Model, ArrayList<Entity>> getEntitiesWithModels(){
 		return this.entitiesWithModels;
 	}
+	public ArrayList<Terrain> getTerrains(){
+		return this.terrains;
+	}
 	
 	public void addEntity(Entity entity) {
 		if(entity.getClass().getSimpleName().equals("Camera")) {
 			cameras.add((Camera)entity);
+		}else if(entity.getClass().getSimpleName().equals("Terrain")) {
+			terrains.add((Terrain)entity);
+			hasTerrains = true;
 		}else {
 			if(entity.hasModel()){
 				Model model = (Model) entity.getComponentsByType(Type.MODEL).get(0);
@@ -60,6 +70,9 @@ public final class Scene {
 
 			}
 		}
+	}
+	public boolean hasTerrains() {
+		return this.hasTerrains;
 	}
 	public void cleanUp() {
 		for(Model m: entitiesWithModels.keySet()) {

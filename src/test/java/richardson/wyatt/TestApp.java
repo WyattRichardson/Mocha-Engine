@@ -52,7 +52,7 @@ public class TestApp {
 		
 		Entity lowPolyCharacter = new Entity("Low_Poly_Character");
 		Model lPCModel = new Model("LowPolyCharacter.dae", GL_TRIANGLES);
-		EntityComponent lPCTransform = new Transform(0, 0, -1, 0, 0, 0, 1);
+		EntityComponent lPCTransform = new Transform(0, -6, -1, 0, 0, 0, 2);
 		EntityComponent lPCController = new EntityController() {
 
 			@Override
@@ -70,7 +70,7 @@ public class TestApp {
 		
 		Entity sun = new Entity("Sun");
 		EntityComponent sunLight = new Light(new Vector3f(.95f,.5f,.2f));
-		EntityComponent sunTransform = new Transform(0, 1000, 0, 0, 0, 0, 1);
+		EntityComponent sunTransform = new Transform(500, 1000, 0, 0, 0, 0, 1);
 		sun.addComponent(sunLight);
 		sun.addComponent(sunTransform);
 		testScene.addEntity(sun);
@@ -107,7 +107,7 @@ public class TestApp {
 		Camera mainCam = new Camera("Main_Camera");
 		EntityComponent mainCamTransform = new Transform(0, 0, 10, 0, 0, 0, 1);
 		EntityComponent mainCamController = new EntityController() {
-			public static final int BASE_SPEED = 10;
+			public static final int BASE_SPEED = 50;
 			private int speed;
 			private float turnSpeed = 3;
 			@Override
@@ -166,8 +166,8 @@ public class TestApp {
 		testScene.setActiveCamera(mainCam);
 		
 		Terrain terrainOne = new Terrain("Terrain_1");
-		Model terrainModel = Model.getRandomTerrainModel(100, 100, 1);
-		Transform terrainTransform = new Transform(0,0,0,0,0,0,1);
+		Model terrainModel = Model.getRandomTerrainModel(1000, 100000, 1);
+		Transform terrainTransform = new Transform(0,-6,0,0,0,0,1);
 		terrainOne.addComponent(terrainTransform);
 		terrainOne.addComponent(terrainModel);
 		testScene.addEntity(terrainOne);
