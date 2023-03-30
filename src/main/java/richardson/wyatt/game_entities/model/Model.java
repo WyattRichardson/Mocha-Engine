@@ -150,12 +150,12 @@ public class Model extends EntityComponent{
 		float offset = size/width;
 		
 		ArrayList<Integer> indicesList = new ArrayList<>();
-		int[] indices = new int[((width - 1)^2)*6];
+		int[] indices = new int[((width - 1)*(width-1))*6];
 		for(int col = 0; col < width; col ++) { // Loop through every face and add too indicesList.
 			for(int row = 1; row < width; row++) {
 				int topRightIndex = (row*width) + col;
 				int topLeftIndex = topRightIndex + 1;
-				int bottomLeftIndex = ((row - 1) * width) + col;
+				int bottomLeftIndex = ((row - 1) * width) + col + 1;
 				int bottomRightIndex = bottomLeftIndex - 1;
 				indicesList.add(topRightIndex);
 				indicesList.add(topLeftIndex);
@@ -183,6 +183,9 @@ public class Model extends EntityComponent{
 				vertices[index * 3 + 1] = y;
 				vertices[index * 3 + 2] = z;
 			}
+		}
+		for(float f: vertices) {
+			System.out.println(f);
 		}
 		glBindBuffer(GL_ARRAY_BUFFER, vertsVBOID);
 		glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
