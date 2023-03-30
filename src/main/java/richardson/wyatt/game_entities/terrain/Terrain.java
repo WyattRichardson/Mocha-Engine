@@ -1,9 +1,12 @@
 package richardson.wyatt.game_entities.terrain;
 
-public class Terrain {
+import richardson.wyatt.game_entities.entity.Entity;
 
-	public Terrain() {
-		// TODO Auto-generated constructor stub
+public class Terrain extends Entity{
+
+	public Terrain(String id) {
+		super(id);
+		
 	}
 
 }

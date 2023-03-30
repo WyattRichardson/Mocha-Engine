@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
 
 import richardson.wyatt.application.Camera;
 import richardson.wyatt.application.Scene;
+import richardson.wyatt.application.Window;
 import richardson.wyatt.game_entities.entity.Entity;
 import richardson.wyatt.game_entities.entity.EntityController;
 import richardson.wyatt.game_entities.entity.Transform;
@@ -105,6 +107,7 @@ public final class Renderer {
 			for (Entity entity: batch) {
 				if(!entity.hasTransform()){
 					System.err.println("ENTITY: " + entity.getId() + " DOES NOT HAVE A TRANSFORM AND WAS SENT TO BE RENDERED!");
+					GLFW.glfwSetWindowShouldClose(Window.id, true);
 					throw new NullPointerException();
 				}
 				Transform transform = (Transform) entity.getComponentByType(Type.TRANSFORM);	

@@ -14,6 +14,7 @@ import richardson.wyatt.game_entities.entity.EntityController;
 import richardson.wyatt.game_entities.entity.Transform;
 import richardson.wyatt.game_entities.lighting.Light;
 import richardson.wyatt.game_entities.model.Model;
+import richardson.wyatt.game_entities.terrain.Terrain;
 import richardson.wyatt.game_entities.textures.ModelTexture;
 import richardson.wyatt.utils.KeyInput;
 import richardson.wyatt.utils.MouseInput;
@@ -103,7 +104,7 @@ public class TestApp {
 		
 
 		
-		Camera mainCam = new Camera("MainCamera");
+		Camera mainCam = new Camera("Main_Camera");
 		EntityComponent mainCamTransform = new Transform(0, 0, 10, 0, 0, 0, 1);
 		EntityComponent mainCamController = new EntityController() {
 			public static final int BASE_SPEED = 10;
@@ -164,6 +165,12 @@ public class TestApp {
 		testScene.addEntity(mainCam);
 		testScene.setActiveCamera(mainCam);
 		
+		Terrain terrainOne = new Terrain("Terrain_1");
+		Model terrainModel = Model.getRandomTerrainModel(100, 100, 1);
+		Transform terrainTransform = new Transform(0,0,0,0,0,0,1);
+		terrainOne.addComponent(terrainTransform);
+		terrainOne.addComponent(terrainModel);
+		testScene.addEntity(terrainOne);
 		
 		
 		Window.setActiveScene(testScene);
