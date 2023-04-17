@@ -2,6 +2,8 @@ package richardson.wyatt;
 
 import static org.lwjgl.opengl.GL30.*;
 
+import java.util.Random;
+
 import org.joml.Math;
 import org.joml.Vector3f;
 
@@ -77,7 +79,7 @@ public class TestApp {
 		
 		Entity spotLight1 = new Entity("Spot_Light_1");
 		EntityComponent spotLight = new Light(new Vector3f(0.3f, 0.3f, 0.3f));
-		EntityComponent spotLight1Transform = new Transform(-10, 3, 10, 0, 0, 0, 1);
+		EntityComponent spotLight1Transform = new Transform(50, 50, 0, 0, 0, 0, 1);
 		EntityComponent spotLight1Controller = new EntityController() {
 			@Override
 			public void tick(float dt) {
@@ -90,10 +92,10 @@ public class TestApp {
 					transform.getPosition().x += (speed * dt);
 				}
 				if(KeyInput.isKeyDown(GLFW_KEY_UP)) {
-					transform.getPosition().y += (speed * dt);
+					transform.getPosition().z -= (speed * dt);
 				}
 				if(KeyInput.isKeyDown(GLFW_KEY_DOWN)) {
-					transform.getPosition().y -= (speed * dt);
+					transform.getPosition().z += (speed * dt);
 				}
 			}
 		};
@@ -105,7 +107,7 @@ public class TestApp {
 
 		
 		Camera mainCam = new Camera("Main_Camera");
-		EntityComponent mainCamTransform = new Transform(0, 0, 10, 0, 0, 0, 1);
+		EntityComponent mainCamTransform = new Transform(0, 60, 10, 0, 0, 0, 1);
 		EntityComponent mainCamController = new EntityController() {
 			public static final int BASE_SPEED = 50;
 			private int speed;
@@ -166,8 +168,10 @@ public class TestApp {
 		testScene.setActiveCamera(mainCam);
 		
 		Terrain terrainOne = new Terrain("Terrain_1");
-		Model terrainModel = Model.getRandomTerrainModel(1000, 100000, 1);
+		Model terrainModel = Model.getRandomTerrainModel(100, 100, 10, new Random().nextInt()*10000000);
 		Transform terrainTransform = new Transform(0,-6,0,0,0,0,1);
+		ModelTexture grassTex = new ModelTexture("Grass_Tex.jpg", GL_TEXTURE0);
+		terrainModel.setTexture(grassTex);
 		terrainOne.addComponent(terrainTransform);
 		terrainOne.addComponent(terrainModel);
 		testScene.addEntity(terrainOne);

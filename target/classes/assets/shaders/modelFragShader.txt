@@ -8,7 +8,7 @@ uniform sampler2D texture0;
 void main(){
 	vec4 totalAmbient = vec4(0);
 	vec4 totalDiffuse = vec4(0);
-	vec2 texCoord = interpTexCoord / 20;
+	vec2 texCoord = interpTexCoord;
 	vec3 unitNorm = normalize(interpNormal);
 	vec4 textureCol;
 

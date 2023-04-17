@@ -2,6 +2,7 @@ package richardson.wyatt.game_entities.model;
 import static org.lwjgl.opengl.GL30.*;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.joml.Vector3f;
 
@@ -140,7 +141,7 @@ public class Model extends EntityComponent{
 		glDeleteVertexArrays(vaoID);
 	}
 	
-	public static Model getRandomTerrainModel(int size, int vertexCount, int amplitude) {
+	public static Model getRandomTerrainModel(int size, int vertexCount, int amplitude, int seed) {
 		Model model = new Model(GL_TRIANGLES);
 		int vaoID = glGenVertexArrays();
 		glBindVertexArray(vaoID);
@@ -150,21 +151,22 @@ public class Model extends EntityComponent{
 		int indVBOID = glGenBuffers();
 		int width = (int) Math.sqrt((double)vertexCount);
 		float offset = size/width;
+
 		
 		ArrayList<Integer> indicesList = new ArrayList<>();
 		int[] indices = new int[((width - 1)*(width-1))*6];
-		for(int col = 0; col < width; col ++) { // Loop through every face and add too indicesList.
+		for(int col = 1; col < width; col ++) { // Loop through every (quad) face and add too indicesList. (Drawing two triangles each )
 			for(int row = 1; row < width; row++) {
-				int topRightIndex = (row*width) + col;
-				int topLeftIndex = topRightIndex + 1;
-				int bottomLeftIndex = ((row - 1) * width) + col + 1;
-				int bottomRightIndex = bottomLeftIndex - 1;
-				indicesList.add(topRightIndex);
-				indicesList.add(topLeftIndex);
+				int index = (row*width) + col;
+				int leftIndex =	index - 1;
+				int bottomLeftIndex = ((row - 1) * width) + col - 1;
+				int bottomIndex = bottomLeftIndex + 1;
+				indicesList.add(index);
+				indicesList.add(leftIndex);
 				indicesList.add(bottomLeftIndex);
-				indicesList.add(topRightIndex);
+				indicesList.add(index);
 				indicesList.add(bottomLeftIndex);
-				indicesList.add(bottomRightIndex);
+				indicesList.add(bottomIndex);
 			}
 		}
 		for(int i = 0; i < indices.length; i++) {
@@ -177,10 +179,11 @@ public class Model extends EntityComponent{
 		float[] vertices = new float[vertexCount*3];
 		for(int row = 0; row < width; row++) { // Generate vertex data.
 			for(int col = 0; col < width; col++) {
-				float x = offset * col * -1;
-				float y = (float)Math.random() / 2;
+				float x = offset * col;
 				float z = offset * row * -1;
 				int index = (row * width) + col;
+				//float y = getHeight(x, z, amplitude, seed);
+				float y = getCosInterpolatedHeight(x, z, offset, amplitude, seed);
 				vertices[index * 3] = x;
 				vertices[index * 3 + 1] = y;
 				vertices[index * 3 + 2] = z;
@@ -197,16 +200,16 @@ public class Model extends EntityComponent{
 				float heightR;
 				float heightU;
 				float heightD;
-				int index = ((row * width) + col) * 3;//Of current vector x value.
+				int index = ((row*width) + col) * 3;//Of current vector x value.
 				if(col==width-1) {
-					heightL = 0;
-				}else {
-					heightL = vertices[index + 4];
-				}
-				if(col==0) {
 					heightR = 0;
 				}else {
-					heightR = vertices[index - 2];
+					heightR = vertices[index + 4];
+				}
+				if(col==0) {
+					heightL = 0;
+				}else {
+					heightL = vertices[index - 2];
 				}
 				if(row==width-1) {
 					heightU = 0;
@@ -229,6 +232,16 @@ public class Model extends EntityComponent{
 		glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0); //TODO: change normalized bool for fun to see what happens to lighting
 		
 		float[] texCoords = new float[vertexCount*2];
+		for(int row = 0; row < width; row++) { // Loop through texCoords array and apply tex coords quad by quad.
+			for(int col = 0; col < width; col++) {
+				int index = (row*width) + col;
+				texCoords[index*2] = col;
+				texCoords[index*2+1] = row;
+			}
+		}
+			
+		
+			
 		glBindBuffer(GL_ARRAY_BUFFER, tcVBOID);
 		glBufferData(GL_ARRAY_BUFFER, texCoords, GL_STATIC_DRAW);
 		glVertexAttribPointer(2, 2, GL_FLOAT, false, 0, 0);
@@ -242,5 +255,46 @@ public class Model extends EntityComponent{
 		return model;
 	}
 	
+	private static float getHeight(float x, float z, int seed) {
+		Random random = new Random();
+		random.setSeed((long) (x * z * seed));
+		return random.nextFloat();
+	}
+	
+	private static float getSmoothHeight(float x, float z, float offset, int seed) {
+		float hUp = getHeight(x, z - offset, seed);
+		float hDown = getHeight(x, z + offset, seed);
+		float hRight = getHeight(x + offset, z, seed);
+		float hLeft = getHeight(x - offset, z, seed);
+		float averageSides = (hUp + hDown + hRight + hLeft) / 4;
+		float hUL = getHeight(x - offset, z - offset, seed);
+		float hUR = getHeight(x + offset, z - offset, seed);
+		float hLL = getHeight(x - offset, z + offset, seed);
+		float hLR = getHeight(x + offset, z + offset, seed);
+		float averageCorners = (hUL + hUR + hLL + hLR) / 16;
+		float average = (averageSides + averageCorners) / 8;
+		float center = getHeight(x, z, seed);
+		return (averageCorners + average + center);
+	}
+	private static float getCosInterpolatedHeight(float x, float z, float offset, int amplitude, int seed) {
+		int intX = (int) x;
+		int intZ = (int) z;
+		float fracX = x - intX;
+		float fracZ = z - intZ;
+		float hTopLeft = getSmoothHeight(intX, intZ, offset, seed);
+		float hTopRight = getSmoothHeight(intX + 1, intZ, offset, seed);
+		float hBottomLeft = getSmoothHeight(intX, intZ - 1, offset, seed);
+		float hBottomRight = getSmoothHeight(intX + 1, intZ - 1, offset, seed);
+		float hTop = interpolate(hTopLeft, hTopRight, fracX);
+		float hBottom = interpolate(hBottomLeft, hBottomRight, fracX);
+		float height = interpolate(hBottom, hTop, fracZ);
+		return height * amplitude;
+		
+	}
+	private static float interpolate(float a, float b, float distance) {
+		float theta = distance * (float) Math.PI;
+		float value = (float) (Math.cos(theta) + 1) / 2;
+		return a * (1-value) + b * value;
+	}
 
 }

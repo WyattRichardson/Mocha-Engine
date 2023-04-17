@@ -6,7 +6,6 @@ public class Terrain extends Entity{
 
 	public Terrain(String id) {
 		super(id);
-		
 	}
 
 }
