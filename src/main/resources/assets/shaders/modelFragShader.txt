@@ -20,7 +20,7 @@ void main(){
 	
 	for(int i = 0; i < 4; i++){
 		float brightness = max(0.25, dot(normalize(toLightVectors[i]), unitNorm));
-		vec4 diffuse = brightness * (vec4(lightColors[i], 1) * textureCol);
+		vec4 diffuse = (brightness/4) * textureCol;
 		totalDiffuse += diffuse;
 		vec4 ambient = vec4(lightColors[i], 1) * (brightness/4);
 		totalAmbient += ambient;

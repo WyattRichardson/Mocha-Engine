@@ -72,19 +72,12 @@ public class TestApp {
 		
 		Entity sun = new Entity("Sun");
 		EntityComponent sunLight = new Light(new Vector3f(.95f,.5f,.2f));
-		EntityComponent sunTransform = new Transform(500, 1000, 0, 0, 0, 0, 1);
-		sun.addComponent(sunLight);
-		sun.addComponent(sunTransform);
-		testScene.addEntity(sun);
-		
-		Entity spotLight1 = new Entity("Spot_Light_1");
-		EntityComponent spotLight = new Light(new Vector3f(0.3f, 0.3f, 0.3f));
-		EntityComponent spotLight1Transform = new Transform(50, 50, 0, 0, 0, 0, 1);
-		EntityComponent spotLight1Controller = new EntityController() {
+		EntityComponent sunTransform = new Transform(0, 1000, 0, 0, 0, 0, 1);
+		EntityComponent sunController = new EntityController() {
 			@Override
 			public void tick(float dt) {
-				Transform transform = (Transform) spotLight1Transform;
-				float speed = 50;
+				Transform transform = (Transform) sunTransform;
+				float speed = 500;
 				if(KeyInput.isKeyDown(GLFW_KEY_LEFT)){
 					transform.getPosition().x -= (speed * dt);
 				}
@@ -99,10 +92,18 @@ public class TestApp {
 				}
 			}
 		};
+		sun.addComponent(sunLight);
+		sun.addComponent(sunTransform);
+		sun.addComponent(sunController);
+		testScene.addEntity(sun);
+		
+		Entity spotLight1 = new Entity("Spot_Light_1");
+		EntityComponent spotLight = new Light(new Vector3f(0.3f, 0.3f, 0.3f));
+		EntityComponent spotLight1Transform = new Transform(50, 50, 0, 0, 0, 0, 1);
+
 		spotLight1.addComponent(spotLight1Transform);
 		spotLight1.addComponent(spotLight);
-		spotLight1.addComponent(spotLight1Controller);
-		testScene.addEntity(spotLight1);
+		//testScene.addEntity(spotLight1);
 		
 
 		
@@ -168,8 +169,8 @@ public class TestApp {
 		testScene.setActiveCamera(mainCam);
 		
 		Terrain terrainOne = new Terrain("Terrain_1");
-		Model terrainModel = Model.getRandomTerrainModel(100, 100, 10, new Random().nextInt()*10000000);
-		Transform terrainTransform = new Transform(0,-6,0,0,0,0,1);
+		Model terrainModel = Model.getRandomTerrainModel(1000, 1000, 50, new Random().nextInt()*10000000);
+		Transform terrainTransform = new Transform(-500,-50,500,0,0,0,1);
 		ModelTexture grassTex = new ModelTexture("Grass_Tex.jpg", GL_TEXTURE0);
 		terrainModel.setTexture(grassTex);
 		terrainOne.addComponent(terrainTransform);
