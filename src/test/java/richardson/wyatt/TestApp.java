@@ -105,23 +105,35 @@ public class TestApp {
 		spotLight1.addComponent(spotLight);
 		//testScene.addEntity(spotLight1);
 		
-
+		int seed = new Random().nextInt(1000000000);
+		Terrain terrainOne = new Terrain("Terrain_1", 50, seed, 1000/(float)Math.sqrt(1000), 1000);
+		Model terrainModel = Model.getRandomTerrainModel(1000, 1000, 50, seed);
+		Transform terrainTransform = new Transform(-500,-50,500,0,0,0,1);
+		ModelTexture grassTex = new ModelTexture("Grass_Tex.jpg", GL_TEXTURE0);
+		terrainModel.setTexture(grassTex);
+		terrainOne.addComponent(terrainTransform);
+		terrainOne.addComponent(terrainModel);
+		testScene.addEntity(terrainOne);
 		
 		Camera mainCam = new Camera("Main_Camera");
 		EntityComponent mainCamTransform = new Transform(0, 60, 10, 0, 0, 0, 1);
-		EntityComponent mainCamController = new EntityController() {
-			public static final int BASE_SPEED = 50;
-			private int speed;
-			private float turnSpeed = 3;
+		EntityComponent mainCamController = new EntityController(terrainOne) {
+			static final int BASE_SPEED = 50;
+			static final float JUMP_POWER = 100;
+			static final float GRAVITY = 50;
+			int speed;
+			float turnSpeed = 3;
+			Terrain terrain = (Terrain) entities.get(0);
+			
 			@Override
 			public void tick(float dt) {
 				Transform transform = (Transform) mainCamTransform;
 				transform.getRotation().y += MouseInput.deltaX * turnSpeed * dt;
 				transform.getRotation().x += MouseInput.deltaY * turnSpeed * dt;
-				if(transform.getRotation().x > 45) {
-					transform.getRotation().x = 45;
-				}else if(transform.getRotation().x < -45) {
-					transform.getRotation().x = -45;
+				if(transform.getRotation().x > 90) {
+					transform.getRotation().x = 90;
+				}else if(transform.getRotation().x < -90) {
+					transform.getRotation().x = -90;
 				}
 				
 				if(KeyInput.isKeyDown(GLFW_KEY_A)){
@@ -146,12 +158,17 @@ public class TestApp {
 				}
 				
 				if(KeyInput.isKeyDown(GLFW_KEY_SPACE)) {
-					speed = BASE_SPEED;
-					transform.getPosition().y += speed * dt;
+					transform.getPosition().y += JUMP_POWER * dt;
 				}
-				if(KeyInput.isKeyDown(GLFW_KEY_LEFT_CONTROL)) {
-					speed = -BASE_SPEED;
-					transform.getPosition().y += speed * dt;
+//				if(KeyInput.isKeyDown(GLFW_KEY_LEFT_CONTROL)) {
+//					speed = -BASE_SPEED;
+//					transform.getPosition().y += speed * dt;
+//				}
+				
+				transform.getPosition().y -= GRAVITY * dt;
+				float height = terrain.getHeight(transform.getPosition().x, transform.getPosition().z);
+				if(transform.getPosition().y < height) {
+					transform.getPosition().y = height;
 				}
 			}
 			
@@ -168,14 +185,7 @@ public class TestApp {
 		testScene.addEntity(mainCam);
 		testScene.setActiveCamera(mainCam);
 		
-		Terrain terrainOne = new Terrain("Terrain_1");
-		Model terrainModel = Model.getRandomTerrainModel(1000, 1000, 50, new Random().nextInt()*10000000);
-		Transform terrainTransform = new Transform(-500,-50,500,0,0,0,1);
-		ModelTexture grassTex = new ModelTexture("Grass_Tex.jpg", GL_TEXTURE0);
-		terrainModel.setTexture(grassTex);
-		terrainOne.addComponent(terrainTransform);
-		terrainOne.addComponent(terrainModel);
-		testScene.addEntity(terrainOne);
+
 		
 		
 		Window.setActiveScene(testScene);

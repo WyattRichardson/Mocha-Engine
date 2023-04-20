@@ -255,13 +255,13 @@ public class Model extends EntityComponent{
 		return model;
 	}
 	
-	private static float getHeight(float x, float z, int seed) {
+	public static float getHeight(float x, float z, int seed) {
 		Random random = new Random();
 		random.setSeed((long) (x * z * seed));
 		return random.nextFloat();
 	}
 	
-	private static float getSmoothHeight(float x, float z, float offset, int seed) {
+	public static float getSmoothHeight(float x, float z, float offset, int seed) {
 		float hUp = getHeight(x, z - offset, seed);
 		float hDown = getHeight(x, z + offset, seed);
 		float hRight = getHeight(x + offset, z, seed);
@@ -276,7 +276,7 @@ public class Model extends EntityComponent{
 		float center = getHeight(x, z, seed);
 		return (averageCorners + average + center);
 	}
-	private static float getCosInterpolatedHeight(float x, float z, float offset, int amplitude, int seed) {
+	public static float getCosInterpolatedHeight(float x, float z, float offset, int amplitude, int seed) {
 		int intX = (int) x;
 		int intZ = (int) z;
 		float fracX = x - intX;
