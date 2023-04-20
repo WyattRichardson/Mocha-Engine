@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import richardson.wyatt.game_entities.entity.Camera;
 import richardson.wyatt.game_entities.entity.Entity;
 import richardson.wyatt.game_entities.entity.EntityComponent.Type;
 import richardson.wyatt.game_entities.model.Model;

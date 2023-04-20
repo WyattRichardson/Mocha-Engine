@@ -7,9 +7,9 @@ import java.util.Random;
 import org.joml.Math;
 import org.joml.Vector3f;
 
-import richardson.wyatt.application.Camera;
 import richardson.wyatt.application.Scene;
 import richardson.wyatt.application.Window;
+import richardson.wyatt.game_entities.entity.Camera;
 import richardson.wyatt.game_entities.entity.Entity;
 import richardson.wyatt.game_entities.entity.EntityComponent;
 import richardson.wyatt.game_entities.entity.EntityController;
