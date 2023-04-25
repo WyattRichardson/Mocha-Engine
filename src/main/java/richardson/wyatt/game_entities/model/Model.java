@@ -182,8 +182,9 @@ public class Model extends EntityComponent{
 				float x = offset * col;
 				float z = offset * row * -1;
 				int index = (row * width) + col;
-				//float y = getHeight(x, z, amplitude, seed);
-				float y = getCosInterpolatedHeight(x, z, offset, amplitude, seed);
+				//float y = getSeedHeight(x, z, seed) * amplitude;
+				//float y = getSmoothHeight(x, z, offset, seed) * amplitude;
+				float y = getCosInterpolatedHeight(x, z, offset, seed) * amplitude;
 				vertices[index * 3] = x;
 				vertices[index * 3 + 1] = y;
 				vertices[index * 3 + 2] = z;
@@ -255,45 +256,46 @@ public class Model extends EntityComponent{
 		return model;
 	}
 	
-	public static float getHeight(float x, float z, int seed) {
+	// Returns between -1 and 1
+	public static float getSeedHeight(float x, float z, int seed) { 
 		Random random = new Random();
-		random.setSeed((long) (x * z * seed));
-		return random.nextFloat();
+		random.setSeed((long) ((x*1024 * z*1024) + seed));
+		return (random.nextFloat() * 2) - 1;
 	}
 	
 	public static float getSmoothHeight(float x, float z, float offset, int seed) {
-		float hUp = getHeight(x, z - offset, seed);
-		float hDown = getHeight(x, z + offset, seed);
-		float hRight = getHeight(x + offset, z, seed);
-		float hLeft = getHeight(x - offset, z, seed);
-		float averageSides = (hUp + hDown + hRight + hLeft) / 4;
-		float hUL = getHeight(x - offset, z - offset, seed);
-		float hUR = getHeight(x + offset, z - offset, seed);
-		float hLL = getHeight(x - offset, z + offset, seed);
-		float hLR = getHeight(x + offset, z + offset, seed);
+		float hUp = getSeedHeight(x, z - offset, seed);
+		float hDown = getSeedHeight(x, z + offset, seed);
+		float hRight = getSeedHeight(x + offset, z, seed);
+		float hLeft = getSeedHeight(x - offset, z, seed);
+		float averageSides = (hUp + hDown + hRight + hLeft) / 8;
+		float hUL = getSeedHeight(x - offset, z - offset, seed);
+		float hUR = getSeedHeight(x + offset, z - offset, seed);
+		float hLL = getSeedHeight(x - offset, z + offset, seed);
+		float hLR = getSeedHeight(x + offset, z + offset, seed);
 		float averageCorners = (hUL + hUR + hLL + hLR) / 16;
-		float average = (averageSides + averageCorners) / 8;
-		float center = getHeight(x, z, seed);
-		return (averageCorners + average + center);
+		float center = getSeedHeight(x, z, seed) / 4;
+		float average = (averageSides + averageCorners + center);
+		return average;
 	}
-	public static float getCosInterpolatedHeight(float x, float z, float offset, int amplitude, int seed) {
-		int intX = (int) x;
-		int intZ = (int) z;
-		float fracX = x - intX;
-		float fracZ = z - intZ;
-		float hTopLeft = getSmoothHeight(intX, intZ, offset, seed);
-		float hTopRight = getSmoothHeight(intX + 1, intZ, offset, seed);
-		float hBottomLeft = getSmoothHeight(intX, intZ - 1, offset, seed);
-		float hBottomRight = getSmoothHeight(intX + 1, intZ - 1, offset, seed);
-		float hTop = interpolate(hTopLeft, hTopRight, fracX);
-		float hBottom = interpolate(hBottomLeft, hBottomRight, fracX);
-		float height = interpolate(hBottom, hTop, fracZ);
-		return height * amplitude;
+	public static float getCosInterpolatedHeight(float x, float z, float offset, int seed) {
+		float fracX = (x % offset);
+		float fracZ = (z % offset);
+		float gridX = x - fracX;
+		float gridZ = z - fracZ;
+		float hTopLeft = getSmoothHeight(gridX, gridZ - offset, offset, seed);
+		float hTopRight = getSmoothHeight(gridX + offset, gridZ - offset, offset, seed);
+		float hBottomLeft = getSmoothHeight(gridX, gridZ, offset, seed);
+		float hBottomRight = getSmoothHeight(gridX + offset, gridZ, offset, seed);
+		float hTop = interpolate(hTopLeft, hTopRight, fracX/offset);
+		float hBottom = interpolate(hBottomLeft, hBottomRight, fracX/offset);
+		float height = interpolate(hTop, hBottom, fracZ/offset);
+		return height;
 		
 	}
 	private static float interpolate(float a, float b, float distance) {
-		float theta = distance * (float) Math.PI;
-		float value = (float) (Math.cos(theta) + 1) / 2;
+		double theta = distance * Math.PI;
+		float value = (float)(1f - Math.cos(theta)) * 0.5f;
 		return a * (1-value) + b * value;
 	}
 

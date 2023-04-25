@@ -97,18 +97,17 @@ public class TestApp {
 		sun.addComponent(sunController);
 		testScene.addEntity(sun);
 		
-		Entity spotLight1 = new Entity("Spot_Light_1");
-		EntityComponent spotLight = new Light(new Vector3f(0.3f, 0.3f, 0.3f));
-		EntityComponent spotLight1Transform = new Transform(50, 50, 0, 0, 0, 0, 1);
-
-		spotLight1.addComponent(spotLight1Transform);
-		spotLight1.addComponent(spotLight);
+//		Entity spotLight1 = new Entity("Spot_Light_1");
+//		EntityComponent spotLight = new Light(new Vector3f(0.3f, 0.3f, 0.3f));
+//		EntityComponent spotLight1Transform = new Transform(50, 50, 0, 0, 0, 0, 1);
+//		spotLight1.addComponent(spotLight1Transform);
+//		spotLight1.addComponent(spotLight);
 		//testScene.addEntity(spotLight1);
 		
 		int seed = new Random().nextInt(1000000000);
 		Terrain terrainOne = new Terrain("Terrain_1", 50, seed, 1000/(float)Math.sqrt(1000), 1000);
-		Model terrainModel = Model.getRandomTerrainModel(1000, 1000, 50, seed);
-		Transform terrainTransform = new Transform(-500,-50,500,0,0,0,1);
+		Model terrainModel = Model.getRandomTerrainModel(64, 4096, 16, seed);
+		Transform terrainTransform = new Transform(0, 0 ,0,0,0,0,1);
 		ModelTexture grassTex = new ModelTexture("Grass_Tex.jpg", GL_TEXTURE0);
 		terrainModel.setTexture(grassTex);
 		terrainOne.addComponent(terrainTransform);
@@ -160,16 +159,16 @@ public class TestApp {
 				if(KeyInput.isKeyDown(GLFW_KEY_SPACE)) {
 					transform.getPosition().y += JUMP_POWER * dt;
 				}
-//				if(KeyInput.isKeyDown(GLFW_KEY_LEFT_CONTROL)) {
-//					speed = -BASE_SPEED;
-//					transform.getPosition().y += speed * dt;
-//				}
-				
-				transform.getPosition().y -= GRAVITY * dt;
-				float height = terrain.getHeight(transform.getPosition().x, transform.getPosition().z);
-				if(transform.getPosition().y < height) {
-					transform.getPosition().y = height;
+				if(KeyInput.isKeyDown(GLFW_KEY_LEFT_CONTROL)) {
+					speed = -BASE_SPEED;
+					transform.getPosition().y += speed * dt;
 				}
+				
+//				transform.getPosition().y -= GRAVITY * dt;
+//				float height = terrain.getHeight(transform.getPosition().x, transform.getPosition().z);
+//				if(transform.getPosition().y < height) {
+//					transform.getPosition().y = height;
+//				}
 			}
 			
 			private void findNextPos(float dt, Transform transform) {
