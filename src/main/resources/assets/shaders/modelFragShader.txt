@@ -20,9 +20,9 @@ void main(){
 	
 	for(int i = 0; i < 4; i++){
 		float brightness = max(0.25, dot(normalize(toLightVectors[i]), unitNorm));
-		vec4 diffuse = (brightness/4) * textureCol;
+		vec4 diffuse = (brightness/4) * textureCol * vec4(lightColors[i], 0);
 		totalDiffuse += diffuse;
-		vec4 ambient = vec4(lightColors[i], 1) * (brightness/4);
+		vec4 ambient = textureCol * (brightness/4);
 		totalAmbient += ambient;
 	}
 	gl_FragColor = totalAmbient + totalDiffuse;

@@ -157,15 +157,14 @@ public final class Renderer {
 				}
 
 			}
-			if(model.hasTexture()){
-				model.getTexture().unbind();
-			}
 			glDisableVertexAttribArray(0);
 			glDisableVertexAttribArray(1);
 			glDisableVertexAttribArray(2);
 			glBindVertexArray(0);
 
-
+			if(model.hasTexture()){
+				model.getTexture().unbind();
+			}
 
 		}
 	}

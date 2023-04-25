@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import org.joml.Vector3f;
-import org.lwjgl.system.MemoryUtil.MemoryAllocator;
 
 import richardson.wyatt.game_entities.entity.EntityComponent;
 import richardson.wyatt.game_entities.textures.ModelTexture;
@@ -183,7 +182,9 @@ public class Model extends EntityComponent{
 				float x = offset * col;
 				float z = offset * row * -1;
 				int index = (row * width) + col;
-				float y = getHeight(x, z, offset, seed, amplitude);
+				//float y = getSeedHeight(x, z, seed) * amplitude;
+				//float y = getSmoothHeight(x, z, offset, seed) * amplitude;
+				float y = getCosInterpolatedHeight(x, z, offset, seed) * amplitude;
 				vertices[index * 3] = x;
 				vertices[index * 3 + 1] = y;
 				vertices[index * 3 + 2] = z;
@@ -249,20 +250,16 @@ public class Model extends EntityComponent{
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 		
-
 		
 		model.setVAOId(vaoID);
 		model.setIndicyCount(indices.length);
-		vertices = null;
-		indices = null;
-		texCoords = null;
 		return model;
 	}
 	
 	// Returns between -1 and 1
 	public static float getSeedHeight(float x, float z, int seed) { 
 		Random random = new Random();
-		random.setSeed((long)(x*345576 + z*554654 + seed));
+		random.setSeed((long) ((x*1024 * z*1024) + seed));
 		return (random.nextFloat() * 2) - 1;
 	}
 	
@@ -300,12 +297,6 @@ public class Model extends EntityComponent{
 		double theta = distance * Math.PI;
 		float value = (float)(1f - Math.cos(theta)) * 0.5f;
 		return a * (1-value) + b * value;
-	}
-	public static float getHeight(float x, float z, float offset, int seed, float amplitude) {
-		float overall = getCosInterpolatedHeight(x/4, z/4, offset, seed)*amplitude;
-		float sec = getCosInterpolatedHeight(x/2, z/2, offset, seed)*amplitude/3;
-		float third = getCosInterpolatedHeight(x, z, offset, seed)*amplitude/9;
-		return overall + sec + third;
 	}
 
 }

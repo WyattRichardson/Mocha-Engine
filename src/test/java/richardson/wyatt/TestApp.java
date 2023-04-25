@@ -49,12 +49,12 @@ public class TestApp {
 		mando.addComponent(mandoModel);
 		mando.addComponent(mandoTransform);
 		mando.addComponent(mandoController);
-		testScene.addEntity(mando);
+	    testScene.addEntity(mando);
 
 		
 		Entity lowPolyCharacter = new Entity("Low_Poly_Character");
 		Model lPCModel = new Model("LowPolyCharacter.dae", GL_TRIANGLES);
-		EntityComponent lPCTransform = new Transform(0, -6, -1, 0, 0, 0, 2);
+		EntityComponent lPCTransform = new Transform(0, 0, 0, 0, 0, 0, 2);
 		EntityComponent lPCController = new EntityController() {
 
 			@Override
@@ -71,8 +71,8 @@ public class TestApp {
 		testScene.addEntity(lowPolyCharacter);
 		
 		Entity sun = new Entity("Sun");
-		EntityComponent sunLight = new Light(new Vector3f(.95f,.5f,.2f));
-		EntityComponent sunTransform = new Transform(0, 1000, 0, 0, 0, 0, 1);
+		EntityComponent sunLight = new Light(new Vector3f(1,.8f,.3f));
+		EntityComponent sunTransform = new Transform(0, 10000, 0, 0, 0, 0, 1);
 		EntityComponent sunController = new EntityController() {
 			@Override
 			public void tick(float dt) {
@@ -102,11 +102,11 @@ public class TestApp {
 //		EntityComponent spotLight1Transform = new Transform(50, 50, 0, 0, 0, 0, 1);
 //		spotLight1.addComponent(spotLight1Transform);
 //		spotLight1.addComponent(spotLight);
-		//testScene.addEntity(spotLight1);
+//      testScene.addEntity(spotLight1);
 		
-		int seed = new Random().nextInt(1000000000);
+		int seed = new Random().nextInt(100000);
 		Terrain terrainOne = new Terrain("Terrain_1", 50, seed, 1000/(float)Math.sqrt(1000), 1000);
-		Model terrainModel = Model.getRandomTerrainModel(64, 4096, 16, seed);
+		Model terrainModel = Model.getRandomTerrainModel(1000, 10000, 70, seed);
 		Transform terrainTransform = new Transform(0, 0 ,0,0,0,0,1);
 		ModelTexture grassTex = new ModelTexture("Grass_Tex.jpg", GL_TEXTURE0);
 		terrainModel.setTexture(grassTex);
@@ -115,7 +115,7 @@ public class TestApp {
 		testScene.addEntity(terrainOne);
 		
 		Camera mainCam = new Camera("Main_Camera");
-		EntityComponent mainCamTransform = new Transform(0, 60, 10, 0, 0, 0, 1);
+		EntityComponent mainCamTransform = new Transform(0, 0, 0, 0, 0, 0, 1);
 		EntityComponent mainCamController = new EntityController(terrainOne) {
 			static final int BASE_SPEED = 50;
 			static final float JUMP_POWER = 100;

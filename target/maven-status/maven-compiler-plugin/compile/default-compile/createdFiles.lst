@@ -14,16 +14,15 @@ richardson\wyatt\rendering\shaders\ModelShader.class
 richardson\wyatt\application\Window$1.class
 richardson\wyatt\game_entities\entity\EntityComponent$Type.class
 richardson\wyatt\game_entities\textures\Texture.class
-richardson\wyatt\game_entities\camera\Camera.class
 richardson\wyatt\utils\OBJLoader.class
 richardson\wyatt\application\Scene.class
 richardson\wyatt\rendering\Renderer.class
 richardson\wyatt\utils\KeyInput.class
-richardson\wyatt\application\Camera.class
 richardson\wyatt\game_entities\entity\EntityComponent.class
 richardson\wyatt\utils\Math.class
 richardson\wyatt\rendering\shaders\ShaderProgram.class
 richardson\wyatt\utils\MouseInput.class
 richardson\wyatt\game_entities\lighting\Light.class
+richardson\wyatt\game_entities\entity\Camera.class
 richardson\wyatt\game_entities\animation\KeyFrame.class
 richardson\wyatt\game_entities\entity\Transform.class
