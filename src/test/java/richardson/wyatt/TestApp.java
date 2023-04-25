@@ -72,7 +72,7 @@ public class TestApp {
 		
 		Entity sun = new Entity("Sun");
 		EntityComponent sunLight = new Light(new Vector3f(1,.8f,.3f));
-		EntityComponent sunTransform = new Transform(0, 10000, 0, 0, 0, 0, 1);
+		EntityComponent sunTransform = new Transform(500, 1000, 0, 0, 0, 0, 1);
 		EntityComponent sunController = new EntityController() {
 			@Override
 			public void tick(float dt) {
@@ -85,10 +85,10 @@ public class TestApp {
 					transform.getPosition().x += (speed * dt);
 				}
 				if(KeyInput.isKeyDown(GLFW_KEY_UP)) {
-					transform.getPosition().y += (speed * dt);
+					transform.getPosition().z -= (speed * dt);
 				}
 				if(KeyInput.isKeyDown(GLFW_KEY_DOWN)) {
-					transform.getPosition().y -= (speed * dt);
+					transform.getPosition().z += (speed * dt);
 				}
 			}
 		};

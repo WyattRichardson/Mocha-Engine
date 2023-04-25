@@ -243,8 +243,8 @@ public class Model extends EntityComponent{
 		for(int row = 0; row < width; row++) { // Loop through texCoords array and apply tex coords quad by quad.
 			for(int col = 0; col < width; col++) {
 				int index = (row*width) + col;
-				texCoords[index*2] = col;
-				texCoords[index*2+1] = row;
+				texCoords[index*2] = col/8f; // Huge annoying bug solved here by specifing 'f', without it was rounding to ints.
+				texCoords[index*2+1] = row/8f;
 			}
 		}
 			
