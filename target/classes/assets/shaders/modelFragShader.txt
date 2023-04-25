@@ -4,7 +4,7 @@ in vec3 interpNormal;
 in vec3 toLightVectors[4];
 uniform vec3 lightColors[4];
 uniform sampler2D texture0;
-
+out vec4 fragColor;
 void main(){
 	vec4 totalAmbient = vec4(0);
 	vec4 totalDiffuse = vec4(0);
@@ -25,6 +25,6 @@ void main(){
 		vec4 ambient = textureCol * (brightness/4);
 		totalAmbient += ambient;
 	}
-	gl_FragColor = totalAmbient + totalDiffuse;
+	fragColor = totalAmbient + totalDiffuse;
 	
 }

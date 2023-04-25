@@ -77,7 +77,7 @@ public class TestApp {
 			@Override
 			public void tick(float dt) {
 				Transform transform = (Transform) sunTransform;
-				float speed = 500;
+				float speed = 1000;
 				if(KeyInput.isKeyDown(GLFW_KEY_LEFT)){
 					transform.getPosition().x -= (speed * dt);
 				}
@@ -85,10 +85,10 @@ public class TestApp {
 					transform.getPosition().x += (speed * dt);
 				}
 				if(KeyInput.isKeyDown(GLFW_KEY_UP)) {
-					transform.getPosition().z -= (speed * dt);
+					transform.getPosition().y += (speed * dt);
 				}
 				if(KeyInput.isKeyDown(GLFW_KEY_DOWN)) {
-					transform.getPosition().z += (speed * dt);
+					transform.getPosition().y -= (speed * dt);
 				}
 			}
 		};
@@ -105,8 +105,8 @@ public class TestApp {
 //      testScene.addEntity(spotLight1);
 		
 		int seed = new Random().nextInt(100000);
-		Terrain terrainOne = new Terrain("Terrain_1", 50, seed, 1000/(float)Math.sqrt(1000), 1000);
-		Model terrainModel = Model.getRandomTerrainModel(1000, 10000, 70, seed);
+		Terrain terrainOne = new Terrain("Terrain_1",70,seed,1000);
+		Model terrainModel = Model.getRandomTerrainModel(terrainOne, 100000);
 		Transform terrainTransform = new Transform(0, 0 ,0,0,0,0,1);
 		ModelTexture grassTex = new ModelTexture("Grass_Tex.jpg", GL_TEXTURE0);
 		terrainModel.setTexture(grassTex);

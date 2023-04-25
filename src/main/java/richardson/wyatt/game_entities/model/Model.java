@@ -8,6 +8,7 @@ import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil.MemoryAllocator;
 
 import richardson.wyatt.game_entities.entity.EntityComponent;
+import richardson.wyatt.game_entities.terrain.Terrain;
 import richardson.wyatt.game_entities.textures.ModelTexture;
 import richardson.wyatt.utils.ColladaLoader;
 import richardson.wyatt.utils.OBJLoader;
@@ -142,7 +143,7 @@ public class Model extends EntityComponent{
 		glDeleteVertexArrays(vaoID);
 	}
 	
-	public static Model getRandomTerrainModel(int size, int vertexCount, int amplitude, int seed) {
+	public static Model getRandomTerrainModel(Terrain terrain, int vertexCount) {
 		Model model = new Model(GL_TRIANGLES);
 		int vaoID = glGenVertexArrays();
 		glBindVertexArray(vaoID);
@@ -151,7 +152,8 @@ public class Model extends EntityComponent{
 		int tcVBOID = glGenBuffers();
 		int indVBOID = glGenBuffers();
 		int width = (int) Math.sqrt((double)vertexCount);
-		float offset = size/width;
+		
+		float offset = terrain.getSize()/width;
 
 		
 		ArrayList<Integer> indicesList = new ArrayList<>();
@@ -183,7 +185,7 @@ public class Model extends EntityComponent{
 				float x = offset * col;
 				float z = offset * row * -1;
 				int index = (row * width) + col;
-				float y = getHeight(x, z, offset, seed, amplitude);
+				float y = getHeight(x, z, offset, terrain.getSeed(), terrain.getAmplitude());
 				vertices[index * 3] = x;
 				vertices[index * 3 + 1] = y;
 				vertices[index * 3 + 2] = z;
@@ -256,6 +258,7 @@ public class Model extends EntityComponent{
 		vertices = null;
 		indices = null;
 		texCoords = null;
+		indicesList.clear();
 		return model;
 	}
 	
@@ -302,9 +305,9 @@ public class Model extends EntityComponent{
 		return a * (1-value) + b * value;
 	}
 	public static float getHeight(float x, float z, float offset, int seed, float amplitude) {
-		float overall = getCosInterpolatedHeight(x/4, z/4, offset, seed)*amplitude;
-		float sec = getCosInterpolatedHeight(x/2, z/2, offset, seed)*amplitude/3;
-		float third = getCosInterpolatedHeight(x, z, offset, seed)*amplitude/9;
+		float overall = getCosInterpolatedHeight(x/8, z/8, offset, seed)*amplitude;
+		float sec = getCosInterpolatedHeight(x/4, z/4, offset, seed)*amplitude/3;
+		float third = getCosInterpolatedHeight(x/2, z/2, offset, seed)*amplitude/9;
 		return overall + sec + third;
 	}
 
