@@ -21,6 +21,7 @@ public class Model extends EntityComponent{
 	private int indicyCount;
 	
 	private ModelTexture texture;
+	
 
 	public Model(String fName, int faceType){
 		super(Type.MODEL);
@@ -205,25 +206,30 @@ public class Model extends EntityComponent{
 				int index = ((row*width) + col) * 3;//Of current vector x value.
 				if(col==width-1) {
 					heightR = 0;
+					heightL = 0;
 				}else {
 					heightR = vertices[index + 4];
 				}
 				if(col==0) {
 					heightL = 0;
+					heightR = 0;
 				}else {
 					heightL = vertices[index - 2];
 				}
 				if(row==width-1) {
 					heightU = 0;
+					heightD = 0;
 				}else {
 					heightU = vertices[index + (width*3) + 1];
 				}
 				if(row==0) {
 					heightD = 0;
+					heightU = 0;
 				}
 				else {
 					heightD = vertices[index - (width*3) + 1];
 				}
+
 				normals[index] = heightL - heightR;
 				normals[index+1] = 2;
 				normals[index+2] = heightD - heightU;
@@ -265,7 +271,7 @@ public class Model extends EntityComponent{
 	// Returns between -1 and 1
 	public static float getSeedHeight(float x, float z, int seed) { 
 		Random random = new Random();
-		random.setSeed((long)(x*345576 + z*554654 + seed));
+		random.setSeed((long)(seed*x*z));
 		return (random.nextFloat() * 2) - 1;
 	}
 	
@@ -280,7 +286,7 @@ public class Model extends EntityComponent{
 		float hLL = getSeedHeight(x - offset, z + offset, seed);
 		float hLR = getSeedHeight(x + offset, z + offset, seed);
 		float averageCorners = (hUL + hUR + hLL + hLR) / 16;
-		float center = getSeedHeight(x, z, seed) / 4;
+		float center = getSeedHeight(x, z, seed)/4;
 		float average = (averageSides + averageCorners + center);
 		return average;
 	}
@@ -295,7 +301,7 @@ public class Model extends EntityComponent{
 		float hBottomRight = getSmoothHeight(gridX + offset, gridZ, offset, seed);
 		float hTop = interpolate(hTopLeft, hTopRight, fracX/offset);
 		float hBottom = interpolate(hBottomLeft, hBottomRight, fracX/offset);
-		float height = interpolate(hTop, hBottom, fracZ/offset);
+		float height = interpolate(hBottom, hTop, fracZ/offset);///AAAHHH hBottom and hTop were flip'd and this was a bug I was trying to find so looonnnggg!!!
 		return height;
 		
 	}
@@ -305,9 +311,9 @@ public class Model extends EntityComponent{
 		return a * (1-value) + b * value;
 	}
 	public static float getHeight(float x, float z, float offset, int seed, float amplitude) {
-		float overall = getCosInterpolatedHeight(x/8, z/8, offset, seed)*amplitude;
-		float sec = getCosInterpolatedHeight(x/4, z/4, offset, seed)*amplitude/3;
-		float third = getCosInterpolatedHeight(x/2, z/2, offset, seed)*amplitude/9;
+		float overall = getCosInterpolatedHeight(x/16, z/16, offset, seed)*amplitude;
+		float sec = getCosInterpolatedHeight(x/8, z/8, offset, seed)*amplitude/8;
+		float third = getCosInterpolatedHeight(x/4, z/4, offset, seed)*amplitude/16;
 		return overall + sec + third;
 	}
 
