@@ -117,12 +117,14 @@ public class TestApp {
 		Camera mainCam = new Camera("Main_Camera");
 		EntityComponent mainCamTransform = new Transform(100, 100, -100, 0, 0, 0, 1);
 		EntityComponent mainCamController = new EntityController(terrainOne) {
-			static final int BASE_SPEED = 50;
-			static final float JUMP_POWER = 100;
+			static final int BASE_SPEED = 20;
+			static final float JUMP_POWER = 20;
 			static final float GRAVITY = 50;
+			float verticalVelocity = 0;
 			int currentSpeed;
 			float turnSpeed = 3;
 			Terrain terrain = (Terrain) entities.get(0);
+			boolean inAir = true;
 			
 			@Override
 			public void tick(float dt) {
@@ -156,18 +158,26 @@ public class TestApp {
 					findNextPos(dt, transform);
 				}
 				
-				if(KeyInput.isKeyDown(GLFW_KEY_SPACE)) {
-					transform.getPosition().y += JUMP_POWER * dt;
+				if(KeyInput.isKeyDown(GLFW_KEY_SPACE) && !inAir) {
+					verticalVelocity = JUMP_POWER;
+					inAir = true;
 				}
 				if(KeyInput.isKeyDown(GLFW_KEY_LEFT_CONTROL)) {
 					currentSpeed = -BASE_SPEED;
 					transform.getPosition().y += currentSpeed * dt;
 				}
 				
-				transform.getPosition().y -= GRAVITY * dt;
+			
 				float height = terrain.getHeight(transform.getPosition().x, transform.getPosition().z);
+				if(inAir) {
+					verticalVelocity -= GRAVITY * dt;
+				}else {
+					verticalVelocity = -GRAVITY;
+				}
+				transform.getPosition().y += verticalVelocity * dt;
 				if(transform.getPosition().y < height+5) {
 					transform.getPosition().y = height+5;
+					inAir = false;
 				}
 			}
 			
