@@ -136,26 +136,40 @@ public final class Renderer {
 			List<Entity> batch = entitiesWithModels.get(model);
 			
 			for (Entity entity: batch) {
-				if(!entity.hasTransform()){
+
+				if (entity.hasController()) {
+					EntityController controller = (EntityController) entity.getComponentByType(Type.CONTROLLER);
+					controller.tick(dt);
+				}
+				if(entity.hasLight()){//TEST THIS
+					Light light = (Light) entity.getComponentByType(Type.LIGHT);
+					int uniformIndex = light.getUniformIndex();
+					if(entity.hasTransform()){
+						Transform transform = (Transform) entity.getComponentByType(Type.TRANSFORM);
+						glUniform3f(modelShader.uniformLocations.get("lightPositions[" + uniformIndex + "]"), transform.getPosition().x, transform.getPosition().y, transform.getPosition().z);
+						glUniform3f(modelShader.uniformLocations.get("lightColors[" + uniformIndex + "]"), light.getColor().x, light.getColor().y, light.getColor().z);
+					}else{
+						System.err.println("ENTITY WITH LIGHT: " + entity.getId() + " HAS NO TRANSFORM!");
+						GLFW.glfwSetWindowShouldClose(Window.id, true);
+						throw new IllegalStateException();
+					}
+				}
+				if(entity.hasTransform()){
+					Transform transform = (Transform) entity.getComponentByType(Type.TRANSFORM);	
+					if (isInFOV(transform.getPosition())) {
+						float[] modelTransformMat = new float[16];
+						float[] viewMatrix = new float[16];
+						Math.createTransformationMatrix(transform.getPosition(), transform.getRotation(), transform.getScale()).get(modelTransformMat);
+						Math.createViewMatrix((Transform) activeCam.getComponentByType(Type.TRANSFORM)).get(viewMatrix);
+						glUniformMatrix4fv(modelShader.uniformLocations.get("viewMatrix"), false, viewMatrix);
+						glUniformMatrix4fv(modelShader.uniformLocations.get("transformationMatrix"), false, modelTransformMat);
+						glDrawElements(model.getFaceType(), model.getIndicyCount(), GL_UNSIGNED_INT, 0);
+					}
+				}else {
 					System.err.println("ENTITY: " + entity.getId() + " DOES NOT HAVE A TRANSFORM AND WAS SENT TO BE RENDERED!");
 					GLFW.glfwSetWindowShouldClose(Window.id, true);
 					throw new NullPointerException();
 				}
-				Transform transform = (Transform) entity.getComponentByType(Type.TRANSFORM);	
-				if (isInFOV(transform.getPosition())) {
-					if (entity.hasController()) {
-						EntityController controller = (EntityController) entity.getComponentByType(Type.CONTROLLER);
-						controller.tick(dt);
-					}
-					float[] modelTransformMat = new float[16];
-					float[] viewMatrix = new float[16];
-					Math.createTransformationMatrix(transform.getPosition(), transform.getRotation(), transform.getScale()).get(modelTransformMat);
-					Math.createViewMatrix((Transform) activeCam.getComponentByType(Type.TRANSFORM)).get(viewMatrix);
-					glUniformMatrix4fv(modelShader.uniformLocations.get("viewMatrix"), false, viewMatrix);
-					glUniformMatrix4fv(modelShader.uniformLocations.get("transformationMatrix"), false, modelTransformMat);
-					glDrawElements(model.getFaceType(), model.getIndicyCount(), GL_UNSIGNED_INT, 0);
-				}
-
 			}
 			if(model.hasTexture()){
 				model.getTexture().unbind();

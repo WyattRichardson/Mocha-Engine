@@ -235,7 +235,7 @@ public class Model extends EntityComponent{
 
 				normals[index] = heightL - heightR;
 				normals[index+1] = 2;
-				normals[index+2] = heightD - heightU;
+				normals[index+2] = heightU - heightD;
 			} 
 		}
 		glBindBuffer(GL_ARRAY_BUFFER, normsVBOID);

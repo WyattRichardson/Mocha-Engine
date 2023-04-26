@@ -49,7 +49,7 @@ public class TestApp {
 		mando.addComponent(mandoModel);
 		mando.addComponent(mandoTransform);
 		mando.addComponent(mandoController);
-	    testScene.addEntity(mando);
+	    //testScene.addEntity(mando);
 
 		
 		Entity lowPolyCharacter = new Entity("Low_Poly_Character");
@@ -68,10 +68,10 @@ public class TestApp {
 		lowPolyCharacter.addComponent(lPCModel);
 		lowPolyCharacter.addComponent(lPCTransform);
 		lowPolyCharacter.addComponent(lPCController);
-		testScene.addEntity(lowPolyCharacter);
+		//testScene.addEntity(lowPolyCharacter);
 		
 		Entity sun = new Entity("Sun");
-		EntityComponent sunLight = new Light(new Vector3f(1,.8f,.3f));
+		EntityComponent sunLight = new Light(new Vector3f(1,.8f,.5f));
 		EntityComponent sunTransform = new Transform(500, 1000, 0, 0, 0, 0, 1);
 		EntityComponent sunController = new EntityController() {
 			@Override
