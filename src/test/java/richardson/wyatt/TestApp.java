@@ -105,11 +105,13 @@ public class TestApp {
 //      testScene.addEntity(spotLight1);
 		
 		int seed = new Random().nextInt(100000);
-		Terrain terrainOne = new Terrain("Terrain_1",20,seed,1000);
-		Model terrainModel = Model.getRandomTerrainModel(terrainOne, 100000);
+		Terrain terrainOne = new Terrain("Terrain_1",200,seed,1000);
+		Model terrainModel = Model.getRandomTerrainModel(terrainOne, 100000, 1);
 		Transform terrainTransform = new Transform(0, 0 ,0,0,0,0,1);
 		ModelTexture grassTex = new ModelTexture("Grass_Tex.jpg", GL_TEXTURE0);
-		terrainModel.setTexture(grassTex);
+		ModelTexture sandTex = new ModelTexture("MC_Grass.jpg", GL_TEXTURE0);
+		//terrainModel.setTexture(grassTex);
+		terrainModel.setTexture(sandTex);
 		terrainOne.addComponent(terrainTransform);
 		terrainOne.addComponent(terrainModel);
 		testScene.addEntity(terrainOne);

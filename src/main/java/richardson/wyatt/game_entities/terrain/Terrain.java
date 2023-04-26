@@ -13,7 +13,6 @@ public class Terrain extends Entity{
 		this.amplitude = amplitude;
 		this.seed = seed;
 		this.size = size;
-		
 	}
 
 	public float getHeight(float x, float z) {
