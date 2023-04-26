@@ -2,27 +2,52 @@ package richardson.wyatt.game_entities.terrain;
 
 import richardson.wyatt.game_entities.entity.Entity;
 import richardson.wyatt.game_entities.model.Model;
+import richardson.wyatt.utils.Math;
 
 public class Terrain extends Entity{
-	private float offset, size;
-	private int seed, amplitude;
-
+	private float size;
+	private int offset, seed, amplitude, width;
+	private float[] heights;
 	public Terrain(String id, int amplitude, int seed, float size) {
 		super(id);
 		this.amplitude = amplitude;
 		this.seed = seed;
 		this.size = size;
+		
 	}
 
+	public float getHeight(float x, float z) {
+		float fracX = (x % offset);
+		float fracZ = (z % offset);
+		int gridX = (int) (x - fracX);
+		int gridZ = (int) (z - fracZ);
+		int index = (-gridZ/offset) * width + (gridX/offset);
+		float bottomLeftHeight = heights[index];
+		float bottomRightHeight = heights[index+1];
+		float topLeftHeight = heights[index + width];
+		float topRightHeight = heights[index + width + 1];
+		float top = Math.linearInterpolate(topLeftHeight, topRightHeight, fracX/offset);
+		float bottom = Math.linearInterpolate(bottomLeftHeight, bottomRightHeight, fracX/offset);
+		float middle = Math.linearInterpolate(bottom, top, -fracZ/offset);
+		return middle;
+	}
 	
+	
+	
+	public void setHeights(float[] heights) {
+		this.heights = heights;
+	}
 	
 	public float getOffset() {
 		return offset;
 	}
 
+	public void setWidth(int width) {
+		this.width = width;
+	}
 
 
-	public void setOffset(float offset) {
+	public void setOffset(int offset) {
 		this.offset = offset;
 	}
 
@@ -64,8 +89,6 @@ public class Terrain extends Entity{
 
 
 
-	public float getHeight(float x, float z) {
-		return 0;
-	}
+
 
 }

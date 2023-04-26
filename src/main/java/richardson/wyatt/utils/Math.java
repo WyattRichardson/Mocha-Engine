@@ -12,6 +12,18 @@ public final class Math {
 	private static final float NEAR_PLANE = 0.1f;
 	private static final float FAR_PLANE = 1000;
 	
+	public static float cosInterpolate(float a, float b, float weight) {
+		double theta = weight * org.joml.Math.PI;
+		float value = (float)(1f - org.joml.Math.cos(theta)) * 0.5f;
+		return a * (1-value) + b * value;
+	}
+	
+	public static float linearInterpolate(float a, float b, float weight) {
+		float difference = b - a;
+		float value = difference*weight;
+		return a + value;
+	}
+	
 	public static Matrix4f createTransformationMatrix(Vector3f translation, Vector3f rotation, float scale) {
 		Matrix4f matrix = new Matrix4f();
 		matrix.identity();

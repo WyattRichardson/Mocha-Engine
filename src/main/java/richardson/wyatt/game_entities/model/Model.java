@@ -12,6 +12,7 @@ import richardson.wyatt.game_entities.terrain.Terrain;
 import richardson.wyatt.game_entities.textures.ModelTexture;
 import richardson.wyatt.utils.ColladaLoader;
 import richardson.wyatt.utils.OBJLoader;
+import richardson.wyatt.utils.Math;
 public class Model extends EntityComponent{
 	
 	private int vaoID;
@@ -152,9 +153,9 @@ public class Model extends EntityComponent{
 		int normsVBOID = glGenBuffers();
 		int tcVBOID = glGenBuffers();
 		int indVBOID = glGenBuffers();
-		int width = (int) Math.sqrt((double)vertexCount);
 		
-		float offset = terrain.getSize()/width;
+		int width = (int) org.joml.Math.sqrt((double)vertexCount);
+		int offset = (int) (terrain.getSize()/width);
 
 		
 		ArrayList<Integer> indicesList = new ArrayList<>();
@@ -179,7 +180,7 @@ public class Model extends EntityComponent{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indVBOID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
 		
-		
+		float[] heights = new float[vertexCount];
 		float[] vertices = new float[vertexCount*3];
 		for(int row = 0; row < width; row++) { // Generate vertex data.
 			for(int col = 0; col < width; col++) {
@@ -190,8 +191,10 @@ public class Model extends EntityComponent{
 				vertices[index * 3] = x;
 				vertices[index * 3 + 1] = y;
 				vertices[index * 3 + 2] = z;
+				heights[index] = y;
 			}
 		}
+		terrain.setHeights(heights);
 		glBindBuffer(GL_ARRAY_BUFFER, vertsVBOID);
 		glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
 		glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
@@ -265,6 +268,8 @@ public class Model extends EntityComponent{
 		indices = null;
 		texCoords = null;
 		indicesList.clear();
+		terrain.setOffset(offset);
+		terrain.setWidth(width);
 		return model;
 	}
 	
@@ -299,17 +304,13 @@ public class Model extends EntityComponent{
 		float hTopRight = getSmoothHeight(gridX + offset, gridZ - offset, offset, seed);
 		float hBottomLeft = getSmoothHeight(gridX, gridZ, offset, seed);
 		float hBottomRight = getSmoothHeight(gridX + offset, gridZ, offset, seed);
-		float hTop = interpolate(hTopLeft, hTopRight, fracX/offset);
-		float hBottom = interpolate(hBottomLeft, hBottomRight, fracX/offset);
-		float height = interpolate(hBottom, hTop, fracZ/offset);///AAAHHH hBottom and hTop were flip'd and this was a bug I was trying to find so looonnnggg!!!
+		float hTop = Math.cosInterpolate(hTopLeft, hTopRight, fracX/offset);
+		float hBottom = Math.cosInterpolate(hBottomLeft, hBottomRight, fracX/offset);
+		float height = Math.cosInterpolate(hBottom, hTop, fracZ/offset);///AAAHHH hBottom and hTop were flip'd and this was a bug I was trying to find so looonnnggg!!!
 		return height;
 		
 	}
-	private static float interpolate(float a, float b, float distance) {
-		double theta = distance * Math.PI;
-		float value = (float)(1f - Math.cos(theta)) * 0.5f;
-		return a * (1-value) + b * value;
-	}
+
 	public static float getHeight(float x, float z, float offset, int seed, float amplitude) {
 		float overall = getCosInterpolatedHeight(x/16, z/16, offset, seed)*amplitude;
 		float sec = getCosInterpolatedHeight(x/8, z/8, offset, seed)*amplitude/8;

@@ -105,7 +105,7 @@ public class TestApp {
 //      testScene.addEntity(spotLight1);
 		
 		int seed = new Random().nextInt(100000);
-		Terrain terrainOne = new Terrain("Terrain_1",70,seed,1000);
+		Terrain terrainOne = new Terrain("Terrain_1",20,seed,1000);
 		Model terrainModel = Model.getRandomTerrainModel(terrainOne, 100000);
 		Transform terrainTransform = new Transform(0, 0 ,0,0,0,0,1);
 		ModelTexture grassTex = new ModelTexture("Grass_Tex.jpg", GL_TEXTURE0);
@@ -115,12 +115,12 @@ public class TestApp {
 		testScene.addEntity(terrainOne);
 		
 		Camera mainCam = new Camera("Main_Camera");
-		EntityComponent mainCamTransform = new Transform(0, 0, 0, 0, 0, 0, 1);
+		EntityComponent mainCamTransform = new Transform(100, 100, -100, 0, 0, 0, 1);
 		EntityComponent mainCamController = new EntityController(terrainOne) {
 			static final int BASE_SPEED = 50;
 			static final float JUMP_POWER = 100;
 			static final float GRAVITY = 50;
-			int speed;
+			int currentSpeed;
 			float turnSpeed = 3;
 			Terrain terrain = (Terrain) entities.get(0);
 			
@@ -136,23 +136,23 @@ public class TestApp {
 				}
 				
 				if(KeyInput.isKeyDown(GLFW_KEY_A)){
-					speed = BASE_SPEED;
+					currentSpeed = BASE_SPEED;
 					transform.getRotation().y -= 90;
 					findNextPos(dt, transform);
 					transform.getRotation().y += 90;
 				}
 				if(KeyInput.isKeyDown(GLFW_KEY_D)){
-					speed = BASE_SPEED;
+					currentSpeed = BASE_SPEED;
 					transform.getRotation().y += 90;
 					findNextPos(dt, transform);
 					transform.getRotation().y -= 90;
 				}
 				if(KeyInput.isKeyDown(GLFW_KEY_W)) {
-					speed = BASE_SPEED;
+					currentSpeed = BASE_SPEED;
 					findNextPos(dt, transform);
 				}
 				if(KeyInput.isKeyDown(GLFW_KEY_S)) {
-					speed = -BASE_SPEED;
+					currentSpeed = -BASE_SPEED;
 					findNextPos(dt, transform);
 				}
 				
@@ -160,19 +160,19 @@ public class TestApp {
 					transform.getPosition().y += JUMP_POWER * dt;
 				}
 				if(KeyInput.isKeyDown(GLFW_KEY_LEFT_CONTROL)) {
-					speed = -BASE_SPEED;
-					transform.getPosition().y += speed * dt;
+					currentSpeed = -BASE_SPEED;
+					transform.getPosition().y += currentSpeed * dt;
 				}
 				
-//				transform.getPosition().y -= GRAVITY * dt;
-//				float height = terrain.getHeight(transform.getPosition().x, transform.getPosition().z);
-//				if(transform.getPosition().y < height) {
-//					transform.getPosition().y = height;
-//				}
+				transform.getPosition().y -= GRAVITY * dt;
+				float height = terrain.getHeight(transform.getPosition().x, transform.getPosition().z);
+				if(transform.getPosition().y < height+5) {
+					transform.getPosition().y = height+5;
+				}
 			}
 			
 			private void findNextPos(float dt, Transform transform) {
-				float distanceTraveled = dt * speed;
+				float distanceTraveled = dt * currentSpeed;
 				transform.getPosition().x += Math.sin(Math.toRadians(transform.getRotation().y)) * distanceTraveled;
 				transform.getPosition().z -= Math.cos(Math.toRadians(transform.getRotation().y)) * distanceTraveled;
 				//transform.getPosition().y -= Math.sin(Math.toRadians(transform.getRotation().x)) * distanceTraveled;
