@@ -2,18 +2,13 @@
 <!DOCTYPE xml>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:SchemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
-	
 	<groupId>richardson.wyatt</groupId>
 	<artifactId>Mocha_Engine</artifactId>
 	<version>1.0 Alpha</version>
-	
-	
 	<properties>
 		<lwjgl.version>3.3.1</lwjgl.version>
 		<lwjgl.natives>natives-windows</lwjgl.natives>
 	</properties>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -25,9 +20,10 @@
 					<target>8</target>
 				</configuration>
 			</plugin>
+			
 		</plugins>
+
 	</build>
-	
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -37,19 +33,14 @@
 				<scope>import</scope>
 				<type>pom</type>
 			</dependency>
-		</dependencies> 
+		</dependencies>
 	</dependencyManagement>
-	
 	<dependencies>
-		
-		
 		<dependency>
 			<groupId>org.joml</groupId>
 			<artifactId>joml</artifactId>
 			<version>1.9.1</version>
 		</dependency>
-
-
 		<dependency>
 			<groupId>org.lwjgl</groupId>
 			<artifactId>lwjgl</artifactId>

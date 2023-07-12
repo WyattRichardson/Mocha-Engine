@@ -25,8 +25,8 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class TestApp {
 
-	public static final int WINDOW_WIDTH = 1920;
-	public static final int WINDOW_HEIGHT = 1080;
+	public static final int WINDOW_WIDTH = 1080;
+	public static final int WINDOW_HEIGHT = 720;
 	public static final float[] WINDOW_CLEAR_COLOR = {0f, .25f, 1f, 1 };
 
 	public static void main(String[] args) {
@@ -49,7 +49,7 @@ public class TestApp {
 		mando.addComponent(mandoModel);
 		mando.addComponent(mandoTransform);
 		mando.addComponent(mandoController);
-	    //testScene.addEntity(mando);
+	    testScene.addEntity(mando);
 
 		
 		Entity lowPolyCharacter = new Entity("Low_Poly_Character");
@@ -108,10 +108,10 @@ public class TestApp {
 		Terrain terrainOne = new Terrain("Terrain_1",200,seed,1000);
 		Model terrainModel = Model.getRandomTerrainModel(terrainOne, 100000, 1);
 		Transform terrainTransform = new Transform(0, 0 ,0,0,0,0,1);
-		ModelTexture grassTex = new ModelTexture("Grass_Tex.jpg", GL_TEXTURE0);
-		ModelTexture sandTex = new ModelTexture("MC_Grass.jpg", GL_TEXTURE0);
+		ModelTexture grassTex = new ModelTexture("MC_Grass.jpg", GL_TEXTURE0);
+		ModelTexture sandTex = new ModelTexture("MC_Sand.jpeg", GL_TEXTURE0);
 		//terrainModel.setTexture(grassTex);
-		terrainModel.setTexture(sandTex);
+		terrainModel.setTexture(grassTex);
 		terrainOne.addComponent(terrainTransform);
 		terrainOne.addComponent(terrainModel);
 		testScene.addEntity(terrainOne);

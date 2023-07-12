@@ -8,10 +8,14 @@ public abstract class EntityController extends EntityComponent {
 	public EntityController() {
 		super(Type.CONTROLLER);
 	}
-	public EntityController(Entity...entity) {
+	/**
+	 * 
+	 * @param entities is any number of external entities passed to this class to allow this controller to interact with other entities.
+	 */
+	public EntityController(Entity...entities) {
 		super(Type.CONTROLLER);
-		for(Entity entitiy: entity) {
-			this.entities.add(entitiy);
+		for(Entity entity: entities) {
+			this.entities.add(entity);
 		}
 	}
 	public abstract void tick(float dt);

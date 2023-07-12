@@ -28,7 +28,6 @@ import static org.lwjgl.opengl.GL11.glCullFace;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL20.glDeleteProgram;
 import static org.lwjgl.opengl.GL30.*;
-
 public final class Renderer {
 
 	public Map<Model, ArrayList<Entity>> entitiesWithModels;

@@ -1,6 +1,0 @@
-{
-    "java.dependency.packagePresentation": "hierarchical",
-    "java.dependency.syncWithFolderExplorer": true,
-    "maven.executable.path": "",
-    "java.configuration.updateBuildConfiguration": "automatic"
-}
