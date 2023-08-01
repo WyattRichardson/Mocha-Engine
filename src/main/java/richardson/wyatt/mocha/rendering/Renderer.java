@@ -92,6 +92,9 @@ public final class Renderer {
 			Math.createViewMatrix((Transform) activeCam.getComponentByType(Type.TRANSFORM)).get(viewMatrix);
 			glUniformMatrix4fv(modelShader.uniformLocations.get("viewMatrix"), false, viewMatrix);
 			glDrawElements(model.getFaceType(), model.getIndicyCount(), GL_UNSIGNED_INT, 0);
+			if(model.hasTexture()) {
+				glBindTexture(GL_TEXTURE_2D, 0);
+			}
 		}
 
 	}

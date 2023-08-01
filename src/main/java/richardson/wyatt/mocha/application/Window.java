@@ -16,7 +16,6 @@ import java.util.TimerTask;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GLCapabilities;
 import org.lwjgl.system.MemoryStack;
 
 import richardson.wyatt.mocha.rendering.Renderer;
@@ -27,7 +26,7 @@ public final class Window {
 	public static final String ENGINE_NAME = "Mocha Engine";
 	public static final String ENGINE_VERSION = " 1.0 Alpha";
 	public static final String WINDOW_TITLE = ENGINE_NAME + ENGINE_VERSION;
-	public static final int MAX_FPS = 120;
+	public static final int MAX_FPS = 144;
 	public static long id;
 	public static GLFWVidMode currentVidMode = null;
 	private static Scene activeScene;
@@ -46,7 +45,6 @@ public final class Window {
 		glfwMakeContextCurrent(id);
 		glfwSwapInterval(0); // Disable VSync
 		glfwSetKeyCallback(id, new KeyInput());
-		glfwSetCursorPosCallback(id, new MouseInput());
 		glfwSetInputMode(id, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		currentVidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 		try ( MemoryStack stack = MemoryStack.stackPush()) {
@@ -96,9 +94,8 @@ public final class Window {
 				glfwSetWindowShouldClose(id, true);
 			}
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			MouseInput.setFrameInvoked(false);
 			glfwPollEvents();
-			MouseInput.checkForStillMouse();
+			MouseInput.tick();
 			actualDt = (float)(System.currentTimeMillis() - lastTime); 
 			actualDt = actualDt / 1000; //Delta time in seconds.
 			renderer.render(actualDt, activeScene);

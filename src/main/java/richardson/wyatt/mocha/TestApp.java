@@ -54,7 +54,7 @@ public class TestApp {
 		
 		Entity lowPolyCharacter = new Entity("Low_Poly_Character");
 		Model lPCModel = new Model("LowPolyCharacter.dae", GL_TRIANGLES);
-		EntityComponent lPCTransform = new Transform(0, 0, 0, 0, 0, 0, 2);
+		EntityComponent lPCTransform = new Transform(0, 100, 0, 0, 0, 0, 100);
 		EntityComponent lPCController = new EntityController() {
 
 			@Override
@@ -68,7 +68,7 @@ public class TestApp {
 		lowPolyCharacter.addComponent(lPCModel);
 		lowPolyCharacter.addComponent(lPCTransform);
 		lowPolyCharacter.addComponent(lPCController);
-		//testScene.addEntity(lowPolyCharacter);
+		testScene.addEntity(lowPolyCharacter);
 		
 		Entity sun = new Entity("Sun");
 		EntityComponent sunLight = new Light(new Vector3f(1,.8f,.5f));

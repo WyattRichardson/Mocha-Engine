@@ -6,13 +6,19 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-
-
+import java.util.List;
 import java.util.regex.*;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+
+import richardson.wyatt.mocha.utils.xml.XmlNode;
+import richardson.wyatt.mocha.utils.xml.XmlParser;
+
 
 public class ColladaLoader {
 
@@ -34,57 +40,29 @@ public class ColladaLoader {
 		ColladaLoader.path = path;
 		fr = new FileReader(new File(path));
 		reader = new BufferedReader(fr);
-
+		
 		readToArrays();
 		arrangeData();
 		flushArrays();
-
+      
 	}
 
 	private static void readToArrays() {
-
+		
 		vertsArray = new ArrayList<Vector3f>();
 		tCArray = new ArrayList<Vector2f>();
 		normsArray = new ArrayList<Vector3f>();
 		faces = new ArrayList<String[]>();
 
-		String line;
-		try {
-			line = reader.readLine().trim();
-			while (line != null) {
-				line = line.trim();
-				String tagName = findTagName(line);
-				if (tagName.equals("library_geometries")) {
-					readGeometries(reader);
-				}else if (tagName.equals("library_controllers")) {
-					// TODO: Implement.
-				}else if (tagName.equals("library_animations")) {
-					// TODO: Implement.
-				}else if (tagName.equals("library_visual_scenes")) {
-					// TODO: Implement.
-				}
-				
-				line = reader.readLine();
-
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.err.println("Could not read file: " + path);
-		}
+		XmlNode collada = XmlParser.loadXmlFile("src/main/resources/assets/models/LowPolyCharacter.dae");
+		readGeometries(collada);
 
 	}
 
-	private static void readGeometries(BufferedReader reader) throws IOException {
-		String line = reader.readLine().trim();
-		while (!findTagName(line).endsWith("mesh-positions\"")) { // POSITIONS
-			line = reader.readLine().trim();
-		}
-		line = reader.readLine().trim();
-		Pattern p = Pattern.compile("<(.+?)>(.+?)</(.+?)>");
-		Matcher m = p.matcher(line);
-		m.find();
-		String[] vertPositions = m.group(2).split(" ");
+	private static void readGeometries(XmlNode collada) {
+		List<XmlNode> sourceNodes = collada.getChild("library_geometries").getChild("geometry").getChild("mesh").getChildren("source"); 
+		String positionsString = sourceNodes.get(0).getChild("float_array").getData();
+		String[] vertPositions = positionsString.split(" ");
 		Vector3f pos = new Vector3f();
 		for (int i = 0; i < vertPositions.length; i++) { // Adds all the vertex positions found in vertPositions array
 															// into vertsArray as Vector3f objects.
@@ -96,14 +74,8 @@ public class ColladaLoader {
 				pos = new Vector3f();
 			}
 		}
-		line = reader.readLine().trim();
-		while (!findTagName(line).endsWith("mesh-normals\"")) { // NORMALS
-			line = reader.readLine().trim();
-		}
-		line = reader.readLine().trim();
-		m = p.matcher(line);
-		m.find();
-		String[] norms = m.group(2).split(" ");
+		String normalsString = sourceNodes.get(1).getChild("float_array").getData();
+		String[] norms = normalsString.split(" ");
 		Vector3f norm = new Vector3f();
 		for (int i = 0; i < norms.length; i++) { // See above.
 			if ((i + 1) % 3 == 1) {
@@ -114,14 +86,8 @@ public class ColladaLoader {
 				norm = new Vector3f();
 			}
 		}
-		line = reader.readLine().trim();
-		while (!findTagName(line).endsWith("mesh-map-0\"")) { // TEXTURE COORDINATES
-			line = reader.readLine().trim();
-		}
-		line = reader.readLine().trim();
-		m = p.matcher(line);
-		m.find();
-		String[] tCs = m.group(2).split(" ");
+		String texCoordsString = sourceNodes.get(2).getChild("float_array").getData();
+		String[] tCs = texCoordsString.split(" ");
 		Vector2f tC = new Vector2f();
 		for (int i = 0; i < tCs.length; i++) {
 			if ((i + 1) % 2 == 1) {
@@ -131,13 +97,8 @@ public class ColladaLoader {
 				tC = new Vector2f();
 			}
 		}
-		line = reader.readLine().trim();
-		while (!findTagName(line).equals("p")) {
-			line = reader.readLine().trim();
-		}
-		m = p.matcher(line);
-		m.find();
-		String[] elements = m.group(2).split(" ");
+		String facesString = collada.getChild("library_geometries").getChild("geometry").getChild("mesh").getChild("triangles").getChild("p").getData();
+		String[] elements = facesString.split(" ");
 		String[] face = new String[3];
 		for (int i = 0; i < elements.length; i += 9) {
 			StringBuilder builder = new StringBuilder();

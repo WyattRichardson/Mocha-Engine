@@ -20,9 +20,7 @@
 					<target>8</target>
 				</configuration>
 			</plugin>
-			
 		</plugins>
-
 	</build>
 	<dependencyManagement>
 		<dependencies>
@@ -36,6 +34,11 @@
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.1</version>
+		</dependency>
 		<dependency>
 			<groupId>org.joml</groupId>
 			<artifactId>joml</artifactId>

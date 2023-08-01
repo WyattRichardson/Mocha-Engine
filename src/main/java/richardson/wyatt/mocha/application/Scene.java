@@ -1,13 +1,7 @@
 package richardson.wyatt.mocha.application;
 
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL20.glDeleteProgram;
-import static org.lwjgl.opengl.GL30.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
 import richardson.wyatt.mocha.game_entities.entity.Camera;
 import richardson.wyatt.mocha.game_entities.entity.Entity;
 import richardson.wyatt.mocha.game_entities.entity.EntityComponent.Type;
